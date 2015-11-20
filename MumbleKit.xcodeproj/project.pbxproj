@@ -1122,6 +1122,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "info.mumble.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
@@ -1133,6 +1134,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "info.mumble.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
@@ -1161,6 +1163,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "info.mumble.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
@@ -1189,6 +1192,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "info.mumble.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
