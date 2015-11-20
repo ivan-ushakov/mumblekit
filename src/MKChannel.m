@@ -37,20 +37,20 @@
     [self removeFromParent];
     [self removeAllUsers];
 
-    [_channelName release];
+    // [_channelName release];
 
-    [_channels release];
-    [_users release];
-    [_linked release];
+    // [_channels release];
+    // [_users release];
+    // [_linked release];
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 #pragma mark -
 
 - (void) removeFromParent {
     [_parent removeChannel:self];
-    [_parent release];
+    // [_parent release];
     _parent = nil;
 }
 
@@ -115,14 +115,14 @@
 }
 
 - (void) unlinkAll {
-    NSArray *linkedChannels = [[_linked copy] autorelease];
+    NSArray *linkedChannels = [_linked copy];
     for (MKChannel *chan in linkedChannels) {
         [self unlinkFromChannel:chan];
     }
 }
 
 - (void) setChannelName:(NSString *)name {
-    [_channelName release];
+    // [_channelName release];
     _channelName = [name copy];
 }
 
@@ -131,7 +131,7 @@
 }
 
 - (void) setParent:(MKChannel *)chan {
-    _parent = [chan retain];
+    _parent = chan;
 }
 
 - (MKChannel *) parent {
@@ -163,7 +163,7 @@
 }
 
 - (void) setChannelDescriptionHash:(NSData *)hash {
-    [_channelDescriptionHash release];
+    // [_channelDescriptionHash release];
     _channelDescriptionHash = [hash copy];
 }
 
@@ -172,7 +172,7 @@
 }
 
 - (void) setChannelDescription:(NSString *)desc {
-    [_channelDescription release];
+    // [_channelDescription release];
     _channelDescription = [desc copy];
 }
 

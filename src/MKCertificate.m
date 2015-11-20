@@ -75,13 +75,13 @@ static int add_ext(X509 * crt, int nid, char *value) {
 }
 
 - (void) dealloc {
-    [_derCert release];
-    [_derPrivKey release];
-    [super dealloc];
+    // [_derCert release];
+    // [_derPrivKey release];
+    // [super dealloc];
 }
 
 - (void) setCertificate:(NSData *)cert {
-    _derCert = [cert retain];
+    _derCert = cert;
 }
 
 - (NSData *) certificate {
@@ -89,7 +89,7 @@ static int add_ext(X509 * crt, int nid, char *value) {
 }
 
 - (void) setPrivateKey:(NSData *)pkey {
-    _derPrivKey = [pkey retain];
+    _derPrivKey = pkey;
 }
 
 - (NSData *) privateKey {
@@ -103,7 +103,7 @@ static int add_ext(X509 * crt, int nid, char *value) {
     [ourCert setCertificate:cert];
     [ourCert setPrivateKey:privkey];
     [ourCert extractCertInfo];
-    return [ourCert autorelease];
+    return ourCert;
 }
 
 // Generate a self-signed certificate with the given name and email address as
@@ -168,14 +168,14 @@ static int add_ext(X509 * crt, int nid, char *value) {
         unsigned char *ptr = [data mutableBytes];
         i2d_X509(x509, &ptr);
         [cert setCertificate:data];
-        [data release];
+        // [data release];
     }
     
     [cert setPrivateKey:[keyPair privateKey]];
 
     X509_free(x509);
 
-    return [cert autorelease];
+    return cert;
 }
 
 // Import a PKCS12-encoded certificate, public key and private key using the given password.
@@ -416,7 +416,7 @@ static int add_ext(X509 * crt, int nid, char *value) {
     if (certs)
         sk_X509_free(certs);
     
-    return [retData autorelease];
+    return retData;
 }
 
 // Export a MKCertificate object as a PKCS12-encoded NSData blob.
@@ -499,8 +499,8 @@ static int add_ext(X509 * crt, int nid, char *value) {
                 BUF_MEM *buf = NULL;
                 BIO_get_mem_ptr(mem, &buf);
                 NSData *data = [[NSData alloc] initWithBytes:buf->data length:buf->length];
-                _subjectDict = [[MKDistinguishedNameParser parseName:data] retain];
-                [data release];
+                _subjectDict = [MKDistinguishedNameParser parseName:data];
+                // [data release];
             }
             BIO_free(mem);
         }
@@ -513,8 +513,8 @@ static int add_ext(X509 * crt, int nid, char *value) {
                 BUF_MEM *buf = NULL;
                 BIO_get_mem_ptr(mem, &buf);
                 NSData *data = [[NSData alloc] initWithBytesNoCopy:buf->data length:buf->length freeWhenDone:NO];
-                _issuerDict = [[MKDistinguishedNameParser parseName:data] retain];
-                [data release];
+                _issuerDict = [MKDistinguishedNameParser parseName:data];
+                // [data release];
             }
             BIO_free(mem);
         }
@@ -543,7 +543,7 @@ static int add_ext(X509 * crt, int nid, char *value) {
                     ASN1_STRING_to_UTF8(&strPtr, name->d.ia5);
                     NSString *dns = [[NSString alloc] initWithUTF8String:(char *)strPtr];
                     [_dnsEntries addObject:dns];
-                    [dns release];
+                    // [dns release];
                     break;
                 }
                 case GEN_EMAIL: {
@@ -552,7 +552,7 @@ static int add_ext(X509 * crt, int nid, char *value) {
                     ASN1_STRING_to_UTF8(&strPtr, name->d.ia5);
                     NSString *email = [[NSString alloc] initWithUTF8String:(char *)strPtr];
                     [_emailAddresses addObject:email];
-                    [email release];
+                    // [email release];
                     break;
                 }
                 // fixme(mkrautz): There's an URI alt name as well.
@@ -650,7 +650,7 @@ static int add_ext(X509 * crt, int nid, char *value) {
         hexstr[2*i+0] = tbl[(buf[i] >> 4) & 0x0f];
         hexstr[2*i+1] = tbl[buf[i] & 0x0f];
     }
-    return [[[NSString alloc] initWithData:hexStrBacking encoding:NSASCIIStringEncoding] autorelease];
+    return [[NSString alloc] initWithData:hexStrBacking encoding:NSASCIIStringEncoding];
 }
 
 // Returns a subject name that is suitable for display to a user.
@@ -740,13 +740,13 @@ static int add_ext(X509 * crt, int nid, char *value) {
             });
         });
     }
-    return [kp autorelease];
+    return kp;
 }
 
 - (void) dealloc {
-    [_privateKey release];
-    [_publicKey release];
-    [super dealloc];
+    // [_privateKey release];
+    // [_publicKey release];
+    // [super dealloc];
 }
 
 - (void) genKeysWithSize:(NSUInteger)bits {

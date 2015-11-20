@@ -25,7 +25,7 @@
     if (_volume)
         free(_volume);
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 - (MKUser *) user {

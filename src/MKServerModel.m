@@ -88,7 +88,7 @@
 
         [_channelMap setObject:_rootChannel forKey:[NSNumber numberWithUnsignedInteger:0]];
 
-        _connection = [conn retain];
+        // _connection = [conn retain];
         [_connection setMessageHandler:self];
         
         // fixme(mkrautz): Refactor this once 1.0's out the door.
@@ -107,13 +107,13 @@
 
     [_connection setMessageHandler:nil];
 
-    [(MulticastDelegate *) _delegate release];
+    // [(MulticastDelegate *) _delegate release];
 
     [self removeAllModelItems];
     
-    [_connection release];
+    // [_connection release];
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 - (NSString *) hostname {
@@ -155,14 +155,14 @@
 // deallocates the internal containers for them.
 - (void) removeAllModelItems {
     [self removeAllUsersFromChannel:_rootChannel];
-    [_userMap release];
+    // [_userMap release];
     _userMap = nil;
     
     [self removeAllChannels];
-    [_channelMap release];
+    // [_channelMap release];
     _channelMap = nil;
     
-    [_rootChannel release];
+    // [_rootChannel release];
     _rootChannel = nil;
 }
 
@@ -484,7 +484,7 @@
         channelACL.inherited = chanACL.inherited;
         
         [acl.acls addObject:channelACL];
-        [channelACL release];
+        // [channelACL release];
     }
     
     
@@ -510,10 +510,10 @@
         }
         
         [acl.groups addObject:channelGroup];
-        [channelGroup release];
+        // [channelGroup release];
     }
     
-    [_delegate serverModel:self didReceiveAccessControl:[acl autorelease] forChannel:chan];   
+    [_delegate serverModel:self didReceiveAccessControl:acl forChannel:chan];   
 }
 
 - (void) connection:(MKConnection *)conn handleQueryUsersMessage: (MPQueryUsers *)msg {
@@ -569,7 +569,7 @@
     [user setSession:userSession];
     [user setUserName:userName];
     [_userMap setObject:user forKey:[NSNumber numberWithUnsignedInteger:userSession]];
-    [user release];
+    // [user release];
 
     return user;
 }
@@ -765,7 +765,7 @@
 
     [_channelMap setObject:chan forKey:[NSNumber numberWithUnsignedInteger:chanId]];
     [parent addChannel:chan];
-    [chan release];
+    // [chan release];
 
     return chan;
 }
@@ -787,7 +787,7 @@
         [_delegate serverModel:self linksChangedForChannel:chan];
     }
 
-    [channels release];
+    // [channels release];
 }
 
 // Handle the 'links_add' list from a ChannelState message
@@ -805,7 +805,7 @@
         [_delegate serverModel:self linksChangedForChannel:chan];
     }
 
-    [channels release];
+    // [channels release];
 }
 
 // Handle the 'links_remove' list from a ChannelState message
@@ -823,7 +823,7 @@
         [_delegate serverModel:self linksChangedForChannel:chan];
     }
 
-    [channels release];
+    // [channels release];
 }
 
 
@@ -999,17 +999,17 @@
 #pragma mark Text message operations
 
 - (void) sendTextMessage:(MKTextMessage *)txtMsg toTreeChannels:(NSArray *)trees andChannels:(NSArray *)channels andUsers:(NSArray *)users {
-    NSMutableArray *treeIds = [[[NSMutableArray alloc] initWithCapacity:[trees count]] autorelease];
+    NSMutableArray *treeIds = [[NSMutableArray alloc] initWithCapacity:[trees count]];
     for (MKChannel *chan in trees) {
         [treeIds addObject:[NSNumber numberWithUnsignedLong:[chan channelId]]];
     }
 
-    NSMutableArray *channelIds = [[[NSMutableArray alloc] initWithCapacity:[channels count]] autorelease];
+    NSMutableArray *channelIds = [[NSMutableArray alloc] initWithCapacity:[channels count]];
     for (MKChannel *chan in channels) {
         [channelIds addObject:[NSNumber numberWithUnsignedLong:[chan channelId]]];
     }
 
-    NSMutableArray *userSessions = [[[NSMutableArray alloc] initWithCapacity:[users count]] autorelease];
+    NSMutableArray *userSessions = [[NSMutableArray alloc] initWithCapacity:[users count]];
     for (MKUser *user in users) {
         [userSessions addObject:[NSNumber numberWithUnsignedLong:[user session]]];
     }

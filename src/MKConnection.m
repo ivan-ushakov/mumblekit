@@ -115,7 +115,7 @@
 // there is new data available (it only uses the kCFSocketDataCallback callback mode).
 static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
                                     CFDataRef addr, const void *data, void *udata) {
-    MKConnection *conn = (MKConnection *)udata;
+    MKConnection *conn = (__bridge MKConnection *)udata;
 
     if (conn == NULL) {
         NSLog(@"MKConnection: MKConnectionUDPCallback called with udata == NULL");
@@ -132,7 +132,7 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
         return;
     }
 
-    [conn _udpDataReady:(NSData *)data];
+    [conn _udpDataReady:(__bridge NSData *)data];
 }
 
 @implementation MKConnection
@@ -150,10 +150,10 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
 - (void) dealloc {
     [self disconnect];
 
-    [_peerCertificates release];
-    [_certificateChain release];
+    // [_peerCertificates release];
+    // [_certificateChain release];
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 - (void) main {
@@ -165,13 +165,17 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
             _readyVoice = NO;
         }
 
-        [_crypt release];
+        // [_crypt release];
         _crypt = [[MKCryptState alloc] init];
 
+        CFReadStreamRef readStream;
+        CFWriteStreamRef writeStream;
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault,
-                                           (CFStringRef)_hostname, (UInt32) _port,
-                                           (CFReadStreamRef *) &_inputStream,
-                                           (CFWriteStreamRef *) &_outputStream);
+                                           (__bridge CFStringRef)_hostname, (UInt32) _port,
+                                           &readStream,
+                                           &writeStream);
+        _inputStream = (__bridge_transfer NSInputStream *)readStream;
+        _outputStream = (__bridge_transfer NSOutputStream *)writeStream;
 
         if (_inputStream == nil || _outputStream == nil) {
             NSLog(@"MKConnection: Unable to create stream pair.");
@@ -201,13 +205,13 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
 
         if (_inputStream) {
             [_inputStream close];
-            [_inputStream release];
+            // [_inputStream release];
             _inputStream = nil;
         }
 
         if (_outputStream) {
             [_outputStream close];
-            [_outputStream release];
+            // [_outputStream release];
             _outputStream = nil;
         }
 
@@ -216,11 +220,11 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
     
         if (_connectionEstablished && !_rejected) {
             if ([_delegate respondsToSelector:@selector(connection:closedWithError:)]) {
-                NSError *err = [_connError retain];
+                NSError *err = _connError;
                 _connectionEstablished = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [_delegate connection:self closedWithError:err];
-                    [err release];
+                    // [err release];
                 });
             }
 
@@ -228,10 +232,10 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
         // We don't want to show it for reconnects, for example.
         } else if (_connError != nil) {
             if ([_delegate respondsToSelector:@selector(connection:unableToConnectWithError:)]) {
-                NSError *err = [_connError retain];
+                NSError *err = _connError;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [_delegate connection:self unableToConnectWithError:err];
-                    [err release];
+                    // [err release];
                 });
             }
         }
@@ -258,7 +262,7 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
 
 - (void) connectToHost:(NSString *)hostName port:(NSUInteger)portNumber {
 
-    [_hostname release];
+    // [_hostname release];
     _hostname = [hostName copy];
     _port = portNumber;
 
@@ -317,8 +321,8 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
 }
 
 - (void) setCertificateChain:(NSArray *)chain {
-    [_certificateChain release];
-    _certificateChain = [chain retain];
+    // [_certificateChain release];
+    _certificateChain = chain;
 }
 
 - (NSArray *) certificateChain {
@@ -506,7 +510,7 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
         CFDictionaryAddValue(sslDictionary, kCFStreamSSLValidatesCertificateChain, _ignoreSSLVerification ? kCFBooleanFalse : kCFBooleanTrue);
         
         if (_certificateChain) {
-            CFDictionaryAddValue(sslDictionary, kCFStreamSSLCertificates, _certificateChain);
+            CFDictionaryAddValue(sslDictionary, kCFStreamSSLCertificates, (__bridge const void *)(_certificateChain));
         }
 
         CFWriteStreamSetProperty((CFWriteStreamRef) _outputStream, kCFStreamPropertySSLSettings, sslDictionary);
@@ -526,7 +530,7 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
 - (void) _setupUdpSock {
     CFSocketContext udpctx;
     memset(&udpctx, 0, sizeof(CFSocketContext));
-    udpctx.info = self;
+    udpctx.info = (__bridge void *)(self);
 
     _udpSock = CFSocketCreate(NULL, PF_INET, SOCK_DGRAM, IPPROTO_UDP,
                                   kCFSocketDataCallBack, MKConnectionUDPCallback,
@@ -549,7 +553,7 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
         return;
     }
 
-    NSData *_udpAddr = [[[NSData alloc] initWithBytes:&sa length:(NSUInteger)sl] autorelease];
+    NSData *_udpAddr = [[NSData alloc] initWithBytes:&sa length:(NSUInteger)sl];
     CFSocketError err = CFSocketConnectToAddress(_udpSock, (CFDataRef)_udpAddr, -1);
     if (err == kCFSocketError) {
         NSLog(@"MKConnection: Unable to CFSocketConnectToAddress()");
@@ -601,14 +605,14 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
         return _peerCertificates;
     }
 
-    NSArray *secCerts = (NSArray *) CFWriteStreamCopyProperty((CFWriteStreamRef) _outputStream, kCFStreamPropertySSLPeerCertificates);
+    NSArray *secCerts = (NSArray *) CFBridgingRelease(CFWriteStreamCopyProperty((CFWriteStreamRef) _outputStream, kCFStreamPropertySSLPeerCertificates));
     _peerCertificates = [[NSMutableArray alloc] initWithCapacity:[secCerts count]];
     [secCerts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSData *data = (NSData *) SecCertificateCopyData((SecCertificateRef)obj);
+        NSData *data = (NSData *) CFBridgingRelease(SecCertificateCopyData((SecCertificateRef)obj));
         [_peerCertificates addObject:[MKCertificate certificateWithCertificate:data privateKey:nil]];
-        [data release];
+        // [data release];
     }];
-    [secCerts release];
+    // [secCerts release];
 
     return _peerCertificates;
 }
@@ -695,7 +699,7 @@ out:
         [self _sendMessageHelper:dict];
     }
 
-    [dict release];
+    // [dict release];
 }
 
 // This is a helper function for dispatching a sendMessageWithType:data: method call
@@ -723,7 +727,7 @@ out:
     if (nwritten != expectedLength) {
         NSLog(@"MKConnection: write error, wrote %li, expected %lu", (long int)nwritten, (unsigned long)expectedLength);
     }
-    [msg release];
+    // [msg release];
 }
 
 // Send a voice packet to the server.  The method will automagically figure
@@ -854,9 +858,9 @@ out:
     if ([pds valid]) {
         data = [[NSData alloc] initWithBytesNoCopy:buf length:[pds size]+1 freeWhenDone:NO];
         [self _sendUDPMessage:data];
-        [data release];
+        // [data release];
     }
-    [pds release];
+    // [pds release];
         
     // Then the TCP ping...
     MPPing_Builder *ping = [MPPing builder];
@@ -923,7 +927,7 @@ out:
         _serverVersion = [[NSString alloc] initWithFormat:@"%i.%i.%i", (version >> 8) & 0xff, (version >> 4) & 0xff, version & 0xff, nil];
     }
     if ([msg hasRelease])
-        _serverRelease = [[msg release] copy];
+        _serverRelease = [msg copy];
     if ([msg hasOs])
         _serverOSName = [[msg os] copy];
     if ([msg hasOsVersion])
@@ -969,8 +973,8 @@ out:
         }
     }
 
-    [_connError release];
-    _connError = [streamError retain];
+    // [_connError release];
+    _connError = streamError;
     [self stopConnectionThread];
 }
 
@@ -1051,7 +1055,7 @@ out:
             bytes[0] = (unsigned char)messageFlags;
             memcpy(bytes+1, [pds dataPtr], [pds left]);
             [[MKAudio sharedAudio] addFrameToBufferWithSession:session data:voicePacketData sequence:seq type:messageType];
-            [voicePacketData release];
+            // [voicePacketData release];
             break;
         }
 
@@ -1067,7 +1071,7 @@ out:
             break;
     }
 
-    [pds release];
+    // [pds release];
 }
 
 - (void) _messageRecieved:(NSData *)data {
@@ -1093,7 +1097,7 @@ out:
                 char *buf = [msg mutableBytes];
                 memset(buf, 0, 3);
                 [self sendMessageWithType:UDPTunnelMessage data:msg];
-                [msg release];
+                // [msg release];
             }
             _readyVoice = YES;
             MPServerSync *serverSync = [MPServerSync parseFromData:data];

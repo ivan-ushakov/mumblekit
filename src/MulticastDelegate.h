@@ -31,7 +31,7 @@
 @class MulticastDelegateEnumerator;
 
 struct MulticastDelegateListNode {
-    id delegate;
+    void * delegate;
     struct MulticastDelegateListNode * prev;
     struct MulticastDelegateListNode * next;
     NSUInteger retainCount;

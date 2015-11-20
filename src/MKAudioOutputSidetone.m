@@ -30,8 +30,8 @@
 }
 
 - (void) dealloc {
-    [_frames release];
-    [super dealloc];
+    // [_frames release];
+    // [super dealloc];
 }
 
 - (void) addFrame:(NSData *)data {

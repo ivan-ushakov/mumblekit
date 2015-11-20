@@ -31,8 +31,8 @@
 }
 
 - (void) dealloc {
-    [_overrideReleaseString release];
-    [super dealloc];
+    // [_overrideReleaseString release];
+    // [super dealloc];
 }
 
 - (NSUInteger) hexVersion {
@@ -40,8 +40,8 @@
 }
 
 - (void) setOverrideReleaseString:(NSString *)releaseString {
-    [_overrideReleaseString release];
-    _overrideReleaseString = [releaseString retain];
+    // [_overrideReleaseString release];
+    _overrideReleaseString = releaseString;
 }
 
 - (void) setOpusEnabled:(BOOL)isEnabled {

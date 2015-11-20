@@ -188,7 +188,7 @@ BOOL MPContextActionModify_OperationIsValidValue(MPContextActionModify_Operation
 - (BOOL) hasOs;
 - (BOOL) hasOsVersion;
 @property (readonly) uint32_t version;
-@property (readonly, retain) NSString* release;
+@property (readonly, retain) NSString* releaseString;
 @property (readonly, retain) NSString* os;
 @property (readonly, retain) NSString* osVersion;
 

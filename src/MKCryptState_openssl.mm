@@ -40,7 +40,7 @@ struct MKCryptStatePrivate {
 - (void) dealloc {
 	free(_priv);
 
-	[super dealloc];
+	// [super dealloc];
 }
 
 - (BOOL) valid {
@@ -71,7 +71,7 @@ struct MKCryptStatePrivate {
 
 	NSMutableData *crypted = [[NSMutableData alloc] initWithLength:[data length]+4];
 	_priv->cs.encrypt((const unsigned char *)[data bytes], (unsigned char *)[crypted mutableBytes], (unsigned int)[data length]);
-	return [crypted autorelease];
+	return crypted;
 }
 
 - (NSData *) decryptData:(NSData *)data {
@@ -84,9 +84,9 @@ struct MKCryptStatePrivate {
 
 	NSMutableData *plain = [[NSMutableData alloc] initWithLength:[data length]-4];
 	if (_priv->cs.decrypt((const unsigned char *)[data bytes], (unsigned char *)[plain mutableBytes], (unsigned int)[data length])) {
-		return [plain autorelease];
+		return plain;
 	} else {
-		[plain release];
+		// [plain release];
 		return nil;
 	}
 }

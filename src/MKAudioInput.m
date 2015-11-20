@@ -87,7 +87,7 @@
         return nil;
     
     // Set device
-    _device = [device retain];
+    _device = device;
 
     // Copy settings
     memcpy(&_settings, settings, sizeof(MKAudioSettings));
@@ -176,11 +176,11 @@
 
 - (void) dealloc {
     [_device setupInput:NULL];
-    [_device release];
+    // [_device release];
 
-    [frameList release];
-    [_opusBuffer release];
-    [_encodingOutputBuffer release];
+    // [frameList release];
+    // [_opusBuffer release];
+    // [_encodingOutputBuffer release];
 
     if (psMic)
         free(psMic);
@@ -198,7 +198,7 @@
     if (_opusEncoder)
         opus_encoder_destroy(_opusEncoder);
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 - (void) setMainConnectionForAudio:(MKConnection *)conn {
@@ -278,7 +278,7 @@
     if (micFrequency == 48000) {
         NSData *data = [[NSData alloc] initWithBytes:psMic length:micLength*sizeof(short)];
         [[[MKAudio sharedAudio] sidetoneOutput] addFrame:data];
-        [data release];
+        // [data release];
     }
 }
 
@@ -542,7 +542,7 @@
     if (len >= 0) {
         NSData *outputBuffer = [[NSData alloc] initWithBytes:[_encodingOutputBuffer bytes] length:len];
         [self flushCheck:outputBuffer terminator:!_doTransmit];
-        [outputBuffer release];
+        // [outputBuffer release];
     }
     _lastTransmit = _doTransmit;
 }
@@ -600,13 +600,13 @@
 
     NSUInteger len = [pds size] + 1;
     NSData *msgData = [[NSData alloc] initWithBytes:data length:len];
-    [pds release];
+    // [pds release];
     
     @synchronized(self) {
         [_connection sendVoiceData:msgData];
     }
 
-    [msgData release];
+    // [msgData release];
 }
 
 - (void) setForceTransmit:(BOOL)flag {

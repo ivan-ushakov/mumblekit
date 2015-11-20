@@ -12,18 +12,18 @@ static PBExtensionRegistry* extensionRegistry = nil;
 + (void) initialize {
   if (self == [ObjectivecDescriptorRoot class]) {
     ObjectivecDescriptorRoot_objectivecFileOptions =
-      [[PBConcreteExtensionField extensionWithType:PBExtensionTypeMessage
+      [PBConcreteExtensionField extensionWithType:PBExtensionTypeMessage
                                      extendedClass:[PBFileOptions class]
                                        fieldNumber:1002
                                       defaultValue:[ObjectiveCFileOptions defaultInstance]
                                messageOrGroupClass:[ObjectiveCFileOptions class]
                                         isRepeated:NO
                                           isPacked:NO
-                            isMessageSetWireFormat:NO] retain];
+                            isMessageSetWireFormat:NO];
     PBMutableExtensionRegistry* registry = [PBMutableExtensionRegistry registry];
     [self registerAllExtensions:registry];
     [PBDescriptorRoot registerAllExtensions:registry];
-    extensionRegistry = [registry retain];
+    extensionRegistry = registry;
   }
 }
 + (void) registerAllExtensions:(PBMutableExtensionRegistry*) registry {
@@ -58,7 +58,7 @@ static PBExtensionRegistry* extensionRegistry = nil;
 - (void) dealloc {
   self.package = nil;
   self.classPrefix = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -127,7 +127,7 @@ static ObjectiveCFileOptions* defaultObjectiveCFileOptionsInstance = nil;
   return (ObjectiveCFileOptions*)[[[ObjectiveCFileOptions builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (ObjectiveCFileOptions_Builder*) builder {
-  return [[[ObjectiveCFileOptions_Builder alloc] init] autorelease];
+  return [[ObjectiveCFileOptions_Builder alloc] init];
 }
 + (ObjectiveCFileOptions_Builder*) builderWithPrototype:(ObjectiveCFileOptions*) prototype {
   return [[ObjectiveCFileOptions builder] mergeFrom:prototype];
@@ -183,11 +183,11 @@ static ObjectiveCFileOptions* defaultObjectiveCFileOptionsInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[ObjectiveCFileOptions alloc] init] autorelease];
+    self.result = [[ObjectiveCFileOptions alloc] init];
   }
   return self;
 }
@@ -195,7 +195,7 @@ static ObjectiveCFileOptions* defaultObjectiveCFileOptionsInstance = nil;
   return result;
 }
 - (ObjectiveCFileOptions_Builder*) clear {
-  self.result = [[[ObjectiveCFileOptions alloc] init] autorelease];
+  self.result = [[ObjectiveCFileOptions alloc] init];
   return self;
 }
 - (ObjectiveCFileOptions_Builder*) clone {
@@ -209,7 +209,7 @@ static ObjectiveCFileOptions* defaultObjectiveCFileOptionsInstance = nil;
   return [self buildPartial];
 }
 - (ObjectiveCFileOptions*) buildPartial {
-  ObjectiveCFileOptions* returnMe = [[result retain] autorelease];
+  ObjectiveCFileOptions* returnMe = result;
   self.result = nil;
   return returnMe;
 }

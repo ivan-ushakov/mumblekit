@@ -96,7 +96,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
     MulticastDelegateListNode *node = malloc(sizeof(MulticastDelegateListNode));
 
-    node->delegate = delegate;
+    node->delegate = (__bridge void *)(delegate);
     node->retainCount = 1;
 
     // Remember: The delegateList is a linked list of MulticastDelegateListNode objects.
@@ -195,7 +195,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
 - (MulticastDelegateEnumerator *)delegateEnumerator
 {
-    return [[[MulticastDelegateEnumerator alloc] initWithDelegateList:delegateList] autorelease];
+    return [[MulticastDelegateEnumerator alloc] initWithDelegateList:delegateList];
 }
 
 /**
@@ -212,7 +212,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
     MulticastDelegateListNode *node = delegateList;
     while(node != NULL)
     {
-        if([node->delegate respondsToSelector:aSelector])
+        if([(__bridge id)(foundNode->delegate) respondsToSelector:aSelector])
         {
             if(foundNode)
             {
@@ -229,7 +229,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
     if(foundNode)
     {
-        return foundNode->delegate;
+        return (__bridge id)(foundNode->delegate);
     }
 
     return nil;
@@ -240,7 +240,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
     MulticastDelegateListNode *node;
     for(node = delegateList; node != NULL; node = node->next)
     {
-        NSMethodSignature *result = [node->delegate methodSignatureForSelector:aSelector];
+        NSMethodSignature *result = [(__bridge id)(node->delegate) methodSignatureForSelector:aSelector];
 
         if(result != nil)
         {
@@ -259,7 +259,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     // Here are the rules:
     // 1. If a delegate is added during this method, it should NOT be invoked.
@@ -321,16 +321,16 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
         for(i = 0; i < nodeCount; i++)
         {
-            if([nodes[i]->delegate respondsToSelector:[anInvocation selector]])
+            if([(__bridge id _Nonnull)(nodes[i]->delegate) respondsToSelector:[anInvocation selector]])
             {
-                [anInvocation invokeWithTarget:nodes[i]->delegate];
+                [anInvocation invokeWithTarget:(__bridge id _Nonnull)(nodes[i]->delegate)];
             }
 
             MulticastDelegateListNodeRelease(nodes[i]);
         }
     }
 
-    [pool release];
+    // [pool release];
 }
 
 - (void)doesNotRecognizeSelector:(SEL)aSelector
@@ -343,7 +343,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 - (void)dealloc
 {
     [self removeAllDelegates];
-    [super dealloc];
+    // [super dealloc];
 }
 
 @end
@@ -434,7 +434,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
         if (node->delegate)
         {
-            return node->delegate;
+            return (__bridge id)(node->delegate);
         }
     }
 
@@ -448,9 +448,9 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
         MulticastDelegateListNode *node = *(delegates + currentDelegateIndex);
         currentDelegateIndex++;
 
-        if([node->delegate isKindOfClass:aClass])
+        if([(__bridge id)(node->delegate) isKindOfClass:aClass])
         {
-            return node->delegate;
+            return (__bridge id)(node->delegate);
         }
     }
 
@@ -464,9 +464,9 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
         MulticastDelegateListNode *node = *(delegates + currentDelegateIndex);
         currentDelegateIndex++;
 
-        if([node->delegate respondsToSelector:aSelector])
+        if([(__bridge id)(node->delegate) respondsToSelector:aSelector])
         {
-            return node->delegate;
+            return (__bridge id)(node->delegate);
         }
     }
 
@@ -484,7 +484,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
 
     free(delegates);
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 @end

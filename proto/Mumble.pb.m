@@ -13,7 +13,7 @@ static PBExtensionRegistry* extensionRegistry = nil;
     PBMutableExtensionRegistry* registry = [PBMutableExtensionRegistry registry];
     [self registerAllExtensions:registry];
     [ObjectivecDescriptorRoot registerAllExtensions:registry];
-    extensionRegistry = [registry retain];
+    extensionRegistry = registry;
   }
 }
 + (void) registerAllExtensions:(PBMutableExtensionRegistry*) registry {
@@ -22,7 +22,7 @@ static PBExtensionRegistry* extensionRegistry = nil;
 
 @interface MPVersion ()
 @property uint32_t version;
-@property (retain) NSString* release;
+@property (retain) NSString* releaseString;
 @property (retain) NSString* os;
 @property (retain) NSString* osVersion;
 @end
@@ -42,7 +42,7 @@ static PBExtensionRegistry* extensionRegistry = nil;
 - (void) setHasRelease:(BOOL) value {
   hasRelease_ = !!value;
 }
-@synthesize release;
+@synthesize releaseString;
 - (BOOL) hasOs {
   return !!hasOs_;
 }
@@ -58,15 +58,15 @@ static PBExtensionRegistry* extensionRegistry = nil;
 }
 @synthesize osVersion;
 - (void) dealloc {
-  self.release = nil;
+  self.releaseString = nil;
   self.os = nil;
   self.osVersion = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
     self.version = 0;
-    self.release = @"";
+    self.releaseString = @"";
     self.os = @"";
     self.osVersion = @"";
   }
@@ -92,7 +92,7 @@ static MPVersion* defaultMPVersionInstance = nil;
     [output writeUInt32:1 value:self.version];
   }
   if (self.hasRelease) {
-    [output writeString:2 value:self.release];
+    [output writeString:2 value:self.releaseString];
   }
   if (self.hasOs) {
     [output writeString:3 value:self.os];
@@ -113,7 +113,7 @@ static MPVersion* defaultMPVersionInstance = nil;
     size += computeUInt32Size(1, self.version);
   }
   if (self.hasRelease) {
-    size += computeStringSize(2, self.release);
+    size += computeStringSize(2, self.releaseString);
   }
   if (self.hasOs) {
     size += computeStringSize(3, self.os);
@@ -144,7 +144,7 @@ static MPVersion* defaultMPVersionInstance = nil;
   return (MPVersion*)[[[MPVersion builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPVersion_Builder*) builder {
-  return [[[MPVersion_Builder alloc] init] autorelease];
+  return [[MPVersion_Builder alloc] init];
 }
 + (MPVersion_Builder*) builderWithPrototype:(MPVersion*) prototype {
   return [[MPVersion builder] mergeFrom:prototype];
@@ -160,7 +160,7 @@ static MPVersion* defaultMPVersionInstance = nil;
     [output appendFormat:@"%@%@: %@\n", indent, @"version", [NSNumber numberWithInt:self.version]];
   }
   if (self.hasRelease) {
-    [output appendFormat:@"%@%@: %@\n", indent, @"release", self.release];
+    [output appendFormat:@"%@%@: %@\n", indent, @"release", self.releaseString];
   }
   if (self.hasOs) {
     [output appendFormat:@"%@%@: %@\n", indent, @"os", self.os];
@@ -182,7 +182,7 @@ static MPVersion* defaultMPVersionInstance = nil;
       self.hasVersion == otherMessage.hasVersion &&
       (!self.hasVersion || self.version == otherMessage.version) &&
       self.hasRelease == otherMessage.hasRelease &&
-      (!self.hasRelease || [self.release isEqual:otherMessage.release]) &&
+      (!self.hasRelease || [self.releaseString isEqual:otherMessage.releaseString]) &&
       self.hasOs == otherMessage.hasOs &&
       (!self.hasOs || [self.os isEqual:otherMessage.os]) &&
       self.hasOsVersion == otherMessage.hasOsVersion &&
@@ -195,7 +195,7 @@ static MPVersion* defaultMPVersionInstance = nil;
     hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.version] hash];
   }
   if (self.hasRelease) {
-    hashCode = hashCode * 31 + [self.release hash];
+    hashCode = hashCode * 31 + [self.releaseString hash];
   }
   if (self.hasOs) {
     hashCode = hashCode * 31 + [self.os hash];
@@ -216,11 +216,11 @@ static MPVersion* defaultMPVersionInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPVersion alloc] init] autorelease];
+    self.result = [[MPVersion alloc] init];
   }
   return self;
 }
@@ -228,7 +228,7 @@ static MPVersion* defaultMPVersionInstance = nil;
   return result;
 }
 - (MPVersion_Builder*) clear {
-  self.result = [[[MPVersion alloc] init] autorelease];
+  self.result = [[MPVersion alloc] init];
   return self;
 }
 - (MPVersion_Builder*) clone {
@@ -242,7 +242,7 @@ static MPVersion* defaultMPVersionInstance = nil;
   return [self buildPartial];
 }
 - (MPVersion*) buildPartial {
-  MPVersion* returnMe = [[result retain] autorelease];
+  MPVersion* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -254,7 +254,7 @@ static MPVersion* defaultMPVersionInstance = nil;
     [self setVersion:other.version];
   }
   if (other.hasRelease) {
-    [self setRelease:other.release];
+    [self setRelease:other.releaseString];
   }
   if (other.hasOs) {
     [self setOs:other.os];
@@ -321,17 +321,17 @@ static MPVersion* defaultMPVersionInstance = nil;
 - (BOOL) hasRelease {
   return result.hasRelease;
 }
-- (NSString*) release {
-  return result.release;
+- (NSString*) releaseString {
+  return result.releaseString;
 }
 - (MPVersion_Builder*) setRelease:(NSString*) value {
   result.hasRelease = YES;
-  result.release = value;
+  result.releaseString = value;
   return self;
 }
 - (MPVersion_Builder*) clearRelease {
   result.hasRelease = NO;
-  result.release = @"";
+  result.releaseString = @"";
   return self;
 }
 - (BOOL) hasOs {
@@ -383,7 +383,7 @@ static MPVersion* defaultMPVersionInstance = nil;
 @synthesize packet;
 - (void) dealloc {
   self.packet = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -448,7 +448,7 @@ static MPUDPTunnel* defaultMPUDPTunnelInstance = nil;
   return (MPUDPTunnel*)[[[MPUDPTunnel builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUDPTunnel_Builder*) builder {
-  return [[[MPUDPTunnel_Builder alloc] init] autorelease];
+  return [[MPUDPTunnel_Builder alloc] init];
 }
 + (MPUDPTunnel_Builder*) builderWithPrototype:(MPUDPTunnel*) prototype {
   return [[MPUDPTunnel builder] mergeFrom:prototype];
@@ -496,11 +496,11 @@ static MPUDPTunnel* defaultMPUDPTunnelInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUDPTunnel alloc] init] autorelease];
+    self.result = [[MPUDPTunnel alloc] init];
   }
   return self;
 }
@@ -508,7 +508,7 @@ static MPUDPTunnel* defaultMPUDPTunnelInstance = nil;
   return result;
 }
 - (MPUDPTunnel_Builder*) clear {
-  self.result = [[[MPUDPTunnel alloc] init] autorelease];
+  self.result = [[MPUDPTunnel alloc] init];
   return self;
 }
 - (MPUDPTunnel_Builder*) clone {
@@ -522,7 +522,7 @@ static MPUDPTunnel* defaultMPUDPTunnelInstance = nil;
   return [self buildPartial];
 }
 - (MPUDPTunnel*) buildPartial {
-  MPUDPTunnel* returnMe = [[result retain] autorelease];
+  MPUDPTunnel* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -624,7 +624,7 @@ static MPUDPTunnel* defaultMPUDPTunnelInstance = nil;
   self.password = nil;
   self.tokensArray = nil;
   self.celtVersionsArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -670,9 +670,9 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
   }
   const NSUInteger tokensArrayCount = self.tokensArray.count;
   if (tokensArrayCount > 0) {
-    const NSString* *values = (const NSString* *)self.tokensArray.data;
+    const void* *values = (const void* *)self.tokensArray.data;
     for (NSUInteger i = 0; i < tokensArrayCount; ++i) {
-      [output writeString:3 value:values[i]];
+      [output writeString:3 value:(__bridge const NSString *)(values[i])];
     }
   }
   const NSUInteger celtVersionsArrayCount = self.celtVersionsArray.count;
@@ -703,9 +703,9 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
   {
     int32_t dataSize = 0;
     const NSUInteger count = self.tokensArray.count;
-    const NSString* *values = (const NSString* *)self.tokensArray.data;
+    const void* *values = (const void* *)self.tokensArray.data;
     for (NSUInteger i = 0; i < count; ++i) {
-      dataSize += computeStringSizeNoTag(values[i]);
+      dataSize += computeStringSizeNoTag((__bridge const NSString *)(values[i]));
     }
     size += dataSize;
     size += 1 * count;
@@ -746,7 +746,7 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
   return (MPAuthenticate*)[[[MPAuthenticate builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPAuthenticate_Builder*) builder {
-  return [[[MPAuthenticate_Builder alloc] init] autorelease];
+  return [[MPAuthenticate_Builder alloc] init];
 }
 + (MPAuthenticate_Builder*) builderWithPrototype:(MPAuthenticate*) prototype {
   return [[MPAuthenticate builder] mergeFrom:prototype];
@@ -824,11 +824,11 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPAuthenticate alloc] init] autorelease];
+    self.result = [[MPAuthenticate alloc] init];
   }
   return self;
 }
@@ -836,7 +836,7 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
   return result;
 }
 - (MPAuthenticate_Builder*) clear {
-  self.result = [[[MPAuthenticate alloc] init] autorelease];
+    self.result = [[MPAuthenticate alloc] init];
   return self;
 }
 - (MPAuthenticate_Builder*) clone {
@@ -850,7 +850,7 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
   return [self buildPartial];
 }
 - (MPAuthenticate*) buildPartial {
-  MPAuthenticate* returnMe = [[result retain] autorelease];
+  MPAuthenticate* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -866,14 +866,14 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
   }
   if (other.tokensArray.count > 0) {
     if (result.tokensArray == nil) {
-      result.tokensArray = [[other.tokensArray copyWithZone:[other.tokensArray zone]] autorelease];
+      result.tokensArray = [other.tokensArray copy];
     } else {
       [result.tokensArray appendArray:other.tokensArray];
     }
   }
   if (other.celtVersionsArray.count > 0) {
     if (result.celtVersionsArray == nil) {
-      result.celtVersionsArray = [[other.celtVersionsArray copyWithZone:[other.celtVersionsArray zone]] autorelease];
+      result.celtVersionsArray = [other.celtVersionsArray copy];
     } else {
       [result.celtVersionsArray appendArray:other.celtVersionsArray];
     }
@@ -1119,7 +1119,7 @@ static MPAuthenticate* defaultMPAuthenticateInstance = nil;
 }
 @synthesize tcpPingVar;
 - (void) dealloc {
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -1251,7 +1251,7 @@ static MPPing* defaultMPPingInstance = nil;
   return (MPPing*)[[[MPPing builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPPing_Builder*) builder {
-  return [[[MPPing_Builder alloc] init] autorelease];
+  return [[MPPing_Builder alloc] init];
 }
 + (MPPing_Builder*) builderWithPrototype:(MPPing*) prototype {
   return [[MPPing builder] mergeFrom:prototype];
@@ -1379,11 +1379,11 @@ static MPPing* defaultMPPingInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPPing alloc] init] autorelease];
+    self.result = [[MPPing alloc] init];
   }
   return self;
 }
@@ -1391,7 +1391,7 @@ static MPPing* defaultMPPingInstance = nil;
   return result;
 }
 - (MPPing_Builder*) clear {
-  self.result = [[[MPPing alloc] init] autorelease];
+  self.result = [[MPPing alloc] init];
   return self;
 }
 - (MPPing_Builder*) clone {
@@ -1405,7 +1405,7 @@ static MPPing* defaultMPPingInstance = nil;
   return [self buildPartial];
 }
 - (MPPing*) buildPartial {
-  MPPing* returnMe = [[result retain] autorelease];
+  MPPing* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -1715,7 +1715,7 @@ static MPPing* defaultMPPingInstance = nil;
 @synthesize reason;
 - (void) dealloc {
   self.reason = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -1784,7 +1784,7 @@ static MPReject* defaultMPRejectInstance = nil;
   return (MPReject*)[[[MPReject builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPReject_Builder*) builder {
-  return [[[MPReject_Builder alloc] init] autorelease];
+  return [[MPReject_Builder alloc] init];
 }
 + (MPReject_Builder*) builderWithPrototype:(MPReject*) prototype {
   return [[MPReject builder] mergeFrom:prototype];
@@ -1855,11 +1855,11 @@ BOOL MPReject_RejectTypeIsValidValue(MPReject_RejectType value) {
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPReject alloc] init] autorelease];
+    self.result = [[MPReject alloc] init];
   }
   return self;
 }
@@ -1867,7 +1867,7 @@ BOOL MPReject_RejectTypeIsValidValue(MPReject_RejectType value) {
   return result;
 }
 - (MPReject_Builder*) clear {
-  self.result = [[[MPReject alloc] init] autorelease];
+  self.result = [[MPReject alloc] init];
   return self;
 }
 - (MPReject_Builder*) clone {
@@ -1881,7 +1881,7 @@ BOOL MPReject_RejectTypeIsValidValue(MPReject_RejectType value) {
   return [self buildPartial];
 }
 - (MPReject*) buildPartial {
-  MPReject* returnMe = [[result retain] autorelease];
+  MPReject* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -2018,7 +2018,7 @@ BOOL MPReject_RejectTypeIsValidValue(MPReject_RejectType value) {
 @synthesize imageMessageLength;
 - (void) dealloc {
   self.welcomeText = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -2108,7 +2108,7 @@ static MPServerConfig* defaultMPServerConfigInstance = nil;
   return (MPServerConfig*)[[[MPServerConfig builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPServerConfig_Builder*) builder {
-  return [[[MPServerConfig_Builder alloc] init] autorelease];
+  return [[MPServerConfig_Builder alloc] init];
 }
 + (MPServerConfig_Builder*) builderWithPrototype:(MPServerConfig*) prototype {
   return [[MPServerConfig builder] mergeFrom:prototype];
@@ -2188,11 +2188,11 @@ static MPServerConfig* defaultMPServerConfigInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPServerConfig alloc] init] autorelease];
+    self.result = [[MPServerConfig alloc] init];
   }
   return self;
 }
@@ -2200,7 +2200,7 @@ static MPServerConfig* defaultMPServerConfigInstance = nil;
   return result;
 }
 - (MPServerConfig_Builder*) clear {
-  self.result = [[[MPServerConfig alloc] init] autorelease];
+  self.result = [[MPServerConfig alloc] init];
   return self;
 }
 - (MPServerConfig_Builder*) clone {
@@ -2214,7 +2214,7 @@ static MPServerConfig* defaultMPServerConfigInstance = nil;
   return [self buildPartial];
 }
 - (MPServerConfig*) buildPartial {
-  MPServerConfig* returnMe = [[result retain] autorelease];
+  MPServerConfig* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -2402,7 +2402,7 @@ static MPServerConfig* defaultMPServerConfigInstance = nil;
 @synthesize permissions;
 - (void) dealloc {
   self.welcomeText = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -2485,7 +2485,7 @@ static MPServerSync* defaultMPServerSyncInstance = nil;
   return (MPServerSync*)[[[MPServerSync builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPServerSync_Builder*) builder {
-  return [[[MPServerSync_Builder alloc] init] autorelease];
+  return [[MPServerSync_Builder alloc] init];
 }
 + (MPServerSync_Builder*) builderWithPrototype:(MPServerSync*) prototype {
   return [[MPServerSync builder] mergeFrom:prototype];
@@ -2557,11 +2557,11 @@ static MPServerSync* defaultMPServerSyncInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPServerSync alloc] init] autorelease];
+    self.result = [[MPServerSync alloc] init];
   }
   return self;
 }
@@ -2569,7 +2569,7 @@ static MPServerSync* defaultMPServerSyncInstance = nil;
   return result;
 }
 - (MPServerSync_Builder*) clear {
-  self.result = [[[MPServerSync alloc] init] autorelease];
+  self.result = [[MPServerSync alloc] init];
   return self;
 }
 - (MPServerSync_Builder*) clone {
@@ -2583,7 +2583,7 @@ static MPServerSync* defaultMPServerSyncInstance = nil;
   return [self buildPartial];
 }
 - (MPServerSync*) buildPartial {
-  MPServerSync* returnMe = [[result retain] autorelease];
+  MPServerSync* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -2723,7 +2723,7 @@ static MPServerSync* defaultMPServerSyncInstance = nil;
 }
 @synthesize channelId;
 - (void) dealloc {
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -2788,7 +2788,7 @@ static MPChannelRemove* defaultMPChannelRemoveInstance = nil;
   return (MPChannelRemove*)[[[MPChannelRemove builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPChannelRemove_Builder*) builder {
-  return [[[MPChannelRemove_Builder alloc] init] autorelease];
+  return [[MPChannelRemove_Builder alloc] init];
 }
 + (MPChannelRemove_Builder*) builderWithPrototype:(MPChannelRemove*) prototype {
   return [[MPChannelRemove builder] mergeFrom:prototype];
@@ -2836,11 +2836,11 @@ static MPChannelRemove* defaultMPChannelRemoveInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPChannelRemove alloc] init] autorelease];
+    self.result = [[MPChannelRemove alloc] init];
   }
   return self;
 }
@@ -2848,7 +2848,7 @@ static MPChannelRemove* defaultMPChannelRemoveInstance = nil;
   return result;
 }
 - (MPChannelRemove_Builder*) clear {
-  self.result = [[[MPChannelRemove alloc] init] autorelease];
+  self.result = [[MPChannelRemove alloc] init];
   return self;
 }
 - (MPChannelRemove_Builder*) clone {
@@ -2862,7 +2862,7 @@ static MPChannelRemove* defaultMPChannelRemoveInstance = nil;
   return [self buildPartial];
 }
 - (MPChannelRemove*) buildPartial {
-  MPChannelRemove* returnMe = [[result retain] autorelease];
+  MPChannelRemove* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -3001,7 +3001,7 @@ static MPChannelRemove* defaultMPChannelRemoveInstance = nil;
   self.linksAddArray = nil;
   self.linksRemoveArray = nil;
   self.descriptionHash = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -3174,7 +3174,7 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
   return (MPChannelState*)[[[MPChannelState builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPChannelState_Builder*) builder {
-  return [[[MPChannelState_Builder alloc] init] autorelease];
+  return [[MPChannelState_Builder alloc] init];
 }
 + (MPChannelState_Builder*) builderWithPrototype:(MPChannelState*) prototype {
   return [[MPChannelState builder] mergeFrom:prototype];
@@ -3291,11 +3291,11 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPChannelState alloc] init] autorelease];
+    self.result = [[MPChannelState alloc] init];
   }
   return self;
 }
@@ -3303,7 +3303,7 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
   return result;
 }
 - (MPChannelState_Builder*) clear {
-  self.result = [[[MPChannelState alloc] init] autorelease];
+  self.result = [[MPChannelState alloc] init];
   return self;
 }
 - (MPChannelState_Builder*) clone {
@@ -3317,7 +3317,7 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
   return [self buildPartial];
 }
 - (MPChannelState*) buildPartial {
-  MPChannelState* returnMe = [[result retain] autorelease];
+  MPChannelState* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -3336,7 +3336,7 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
   }
   if (other.linksArray.count > 0) {
     if (result.linksArray == nil) {
-      result.linksArray = [[other.linksArray copyWithZone:[other.linksArray zone]] autorelease];
+      result.linksArray = [other.linksArray copy];
     } else {
       [result.linksArray appendArray:other.linksArray];
     }
@@ -3346,14 +3346,14 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
   }
   if (other.linksAddArray.count > 0) {
     if (result.linksAddArray == nil) {
-      result.linksAddArray = [[other.linksAddArray copyWithZone:[other.linksAddArray zone]] autorelease];
+      result.linksAddArray = [other.linksAddArray copy];
     } else {
       [result.linksAddArray appendArray:other.linksAddArray];
     }
   }
   if (other.linksRemoveArray.count > 0) {
     if (result.linksRemoveArray == nil) {
-      result.linksRemoveArray = [[other.linksRemoveArray copyWithZone:[other.linksRemoveArray zone]] autorelease];
+      result.linksRemoveArray = [other.linksRemoveArray copy];
     } else {
       [result.linksRemoveArray appendArray:other.linksRemoveArray];
     }
@@ -3664,7 +3664,7 @@ static MPChannelState* defaultMPChannelStateInstance = nil;
 }
 - (void) dealloc {
   self.reason = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -3750,7 +3750,7 @@ static MPUserRemove* defaultMPUserRemoveInstance = nil;
   return (MPUserRemove*)[[[MPUserRemove builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUserRemove_Builder*) builder {
-  return [[[MPUserRemove_Builder alloc] init] autorelease];
+  return [[MPUserRemove_Builder alloc] init];
 }
 + (MPUserRemove_Builder*) builderWithPrototype:(MPUserRemove*) prototype {
   return [[MPUserRemove builder] mergeFrom:prototype];
@@ -3822,11 +3822,11 @@ static MPUserRemove* defaultMPUserRemoveInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUserRemove alloc] init] autorelease];
+    self.result = [[MPUserRemove alloc] init];
   }
   return self;
 }
@@ -3834,7 +3834,7 @@ static MPUserRemove* defaultMPUserRemoveInstance = nil;
   return result;
 }
 - (MPUserRemove_Builder*) clear {
-  self.result = [[[MPUserRemove alloc] init] autorelease];
+  self.result = [[MPUserRemove alloc] init];
   return self;
 }
 - (MPUserRemove_Builder*) clone {
@@ -3848,7 +3848,7 @@ static MPUserRemove* defaultMPUserRemoveInstance = nil;
   return [self buildPartial];
 }
 - (MPUserRemove*) buildPartial {
-  MPUserRemove* returnMe = [[result retain] autorelease];
+  MPUserRemove* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -4175,7 +4175,7 @@ static MPUserRemove* defaultMPUserRemoveInstance = nil;
   self.certHash = nil;
   self.commentHash = nil;
   self.textureHash = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -4363,7 +4363,7 @@ static MPUserState* defaultMPUserStateInstance = nil;
   return (MPUserState*)[[[MPUserState builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUserState_Builder*) builder {
-  return [[[MPUserState_Builder alloc] init] autorelease];
+  return [[MPUserState_Builder alloc] init];
 }
 + (MPUserState_Builder*) builderWithPrototype:(MPUserState*) prototype {
   return [[MPUserState builder] mergeFrom:prototype];
@@ -4555,11 +4555,11 @@ static MPUserState* defaultMPUserStateInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUserState alloc] init] autorelease];
+    self.result = [[MPUserState alloc] init];
   }
   return self;
 }
@@ -4567,7 +4567,7 @@ static MPUserState* defaultMPUserStateInstance = nil;
   return result;
 }
 - (MPUserState_Builder*) clear {
-  self.result = [[[MPUserState alloc] init] autorelease];
+  self.result = [[MPUserState alloc] init];
   return self;
 }
 - (MPUserState_Builder*) clone {
@@ -4581,7 +4581,7 @@ static MPUserState* defaultMPUserStateInstance = nil;
   return [self buildPartial];
 }
 - (MPUserState*) buildPartial {
-  MPUserState* returnMe = [[result retain] autorelease];
+  MPUserState* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -5075,7 +5075,7 @@ static MPUserState* defaultMPUserStateInstance = nil;
 }
 - (void) dealloc {
   self.bansArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -5154,7 +5154,7 @@ static MPBanList* defaultMPBanListInstance = nil;
   return (MPBanList*)[[[MPBanList builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPBanList_Builder*) builder {
-  return [[[MPBanList_Builder alloc] init] autorelease];
+  return [[MPBanList_Builder alloc] init];
 }
 + (MPBanList_Builder*) builderWithPrototype:(MPBanList*) prototype {
   return [[MPBanList builder] mergeFrom:prototype];
@@ -5271,7 +5271,7 @@ static MPBanList* defaultMPBanListInstance = nil;
   self.certHash = nil;
   self.reason = nil;
   self.start = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -5381,7 +5381,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   return (MPBanList_BanEntry*)[[[MPBanList_BanEntry builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPBanList_BanEntry_Builder*) builder {
-  return [[[MPBanList_BanEntry_Builder alloc] init] autorelease];
+  return [[MPBanList_BanEntry_Builder alloc] init];
 }
 + (MPBanList_BanEntry_Builder*) builderWithPrototype:(MPBanList_BanEntry*) prototype {
   return [[MPBanList_BanEntry builder] mergeFrom:prototype];
@@ -5477,11 +5477,11 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPBanList_BanEntry alloc] init] autorelease];
+    self.result = [[MPBanList_BanEntry alloc] init];
   }
   return self;
 }
@@ -5489,7 +5489,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   return result;
 }
 - (MPBanList_BanEntry_Builder*) clear {
-  self.result = [[[MPBanList_BanEntry alloc] init] autorelease];
+  self.result = [[MPBanList_BanEntry alloc] init];
   return self;
 }
 - (MPBanList_BanEntry_Builder*) clone {
@@ -5503,7 +5503,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   return [self buildPartial];
 }
 - (MPBanList_BanEntry*) buildPartial {
-  MPBanList_BanEntry* returnMe = [[result retain] autorelease];
+  MPBanList_BanEntry* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -5706,11 +5706,11 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPBanList alloc] init] autorelease];
+    self.result = [[MPBanList alloc] init];
   }
   return self;
 }
@@ -5718,7 +5718,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   return result;
 }
 - (MPBanList_Builder*) clear {
-  self.result = [[[MPBanList alloc] init] autorelease];
+  self.result = [[MPBanList alloc] init];
   return self;
 }
 - (MPBanList_Builder*) clone {
@@ -5732,7 +5732,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   return [self buildPartial];
 }
 - (MPBanList*) buildPartial {
-  MPBanList* returnMe = [[result retain] autorelease];
+  MPBanList* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -5742,7 +5742,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   }
   if (other.bansArray.count > 0) {
     if (result.bansArray == nil) {
-      result.bansArray = [[other.bansArray copyWithZone:[other.bansArray zone]] autorelease];
+      result.bansArray = [other.bansArray copy];
     } else {
       [result.bansArray appendArray:other.bansArray];
     }
@@ -5862,7 +5862,7 @@ static MPBanList_BanEntry* defaultMPBanList_BanEntryInstance = nil;
   self.channelIdArray = nil;
   self.treeIdArray = nil;
   self.message = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -6003,7 +6003,7 @@ static MPTextMessage* defaultMPTextMessageInstance = nil;
   return (MPTextMessage*)[[[MPTextMessage builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPTextMessage_Builder*) builder {
-  return [[[MPTextMessage_Builder alloc] init] autorelease];
+  return [[MPTextMessage_Builder alloc] init];
 }
 + (MPTextMessage_Builder*) builderWithPrototype:(MPTextMessage*) prototype {
   return [[MPTextMessage builder] mergeFrom:prototype];
@@ -6080,11 +6080,11 @@ static MPTextMessage* defaultMPTextMessageInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPTextMessage alloc] init] autorelease];
+    self.result = [[MPTextMessage alloc] init];
   }
   return self;
 }
@@ -6092,7 +6092,7 @@ static MPTextMessage* defaultMPTextMessageInstance = nil;
   return result;
 }
 - (MPTextMessage_Builder*) clear {
-  self.result = [[[MPTextMessage alloc] init] autorelease];
+  self.result = [[MPTextMessage alloc] init];
   return self;
 }
 - (MPTextMessage_Builder*) clone {
@@ -6106,7 +6106,7 @@ static MPTextMessage* defaultMPTextMessageInstance = nil;
   return [self buildPartial];
 }
 - (MPTextMessage*) buildPartial {
-  MPTextMessage* returnMe = [[result retain] autorelease];
+  MPTextMessage* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -6119,21 +6119,21 @@ static MPTextMessage* defaultMPTextMessageInstance = nil;
   }
   if (other.sessionArray.count > 0) {
     if (result.sessionArray == nil) {
-      result.sessionArray = [[other.sessionArray copyWithZone:[other.sessionArray zone]] autorelease];
+      result.sessionArray = [other.sessionArray copy];
     } else {
       [result.sessionArray appendArray:other.sessionArray];
     }
   }
   if (other.channelIdArray.count > 0) {
     if (result.channelIdArray == nil) {
-      result.channelIdArray = [[other.channelIdArray copyWithZone:[other.channelIdArray zone]] autorelease];
+      result.channelIdArray = [other.channelIdArray copy];
     } else {
       [result.channelIdArray appendArray:other.channelIdArray];
     }
   }
   if (other.treeIdArray.count > 0) {
     if (result.treeIdArray == nil) {
-      result.treeIdArray = [[other.treeIdArray copyWithZone:[other.treeIdArray zone]] autorelease];
+      result.treeIdArray = [other.treeIdArray copy];
     } else {
       [result.treeIdArray appendArray:other.treeIdArray];
     }
@@ -6350,7 +6350,7 @@ static MPTextMessage* defaultMPTextMessageInstance = nil;
 - (void) dealloc {
   self.reason = nil;
   self.name = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -6447,7 +6447,7 @@ static MPPermissionDenied* defaultMPPermissionDeniedInstance = nil;
   return (MPPermissionDenied*)[[[MPPermissionDenied builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPPermissionDenied_Builder*) builder {
-  return [[[MPPermissionDenied_Builder alloc] init] autorelease];
+  return [[MPPermissionDenied_Builder alloc] init];
 }
 + (MPPermissionDenied_Builder*) builderWithPrototype:(MPPermissionDenied*) prototype {
   return [[MPPermissionDenied builder] mergeFrom:prototype];
@@ -6552,11 +6552,11 @@ BOOL MPPermissionDenied_DenyTypeIsValidValue(MPPermissionDenied_DenyType value) 
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPPermissionDenied alloc] init] autorelease];
+    self.result = [[MPPermissionDenied alloc] init];
   }
   return self;
 }
@@ -6564,7 +6564,7 @@ BOOL MPPermissionDenied_DenyTypeIsValidValue(MPPermissionDenied_DenyType value) 
   return result;
 }
 - (MPPermissionDenied_Builder*) clear {
-  self.result = [[[MPPermissionDenied alloc] init] autorelease];
+  self.result = [[MPPermissionDenied alloc] init];
   return self;
 }
 - (MPPermissionDenied_Builder*) clone {
@@ -6578,7 +6578,7 @@ BOOL MPPermissionDenied_DenyTypeIsValidValue(MPPermissionDenied_DenyType value) 
   return [self buildPartial];
 }
 - (MPPermissionDenied*) buildPartial {
-  MPPermissionDenied* returnMe = [[result retain] autorelease];
+  MPPermissionDenied* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -6803,7 +6803,7 @@ BOOL MPPermissionDenied_DenyTypeIsValidValue(MPPermissionDenied_DenyType value) 
 - (void) dealloc {
   self.groupsArray = nil;
   self.aclsArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -6911,7 +6911,7 @@ static MPACL* defaultMPACLInstance = nil;
   return (MPACL*)[[[MPACL builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPACL_Builder*) builder {
-  return [[[MPACL_Builder alloc] init] autorelease];
+  return [[MPACL_Builder alloc] init];
 }
 + (MPACL_Builder*) builderWithPrototype:(MPACL*) prototype {
   return [[MPACL builder] mergeFrom:prototype];
@@ -7053,7 +7053,7 @@ static MPACL* defaultMPACLInstance = nil;
   self.addArray = nil;
   self.removeArray = nil;
   self.inheritedMembersArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -7208,7 +7208,7 @@ static MPACL_ChanGroup* defaultMPACL_ChanGroupInstance = nil;
   return (MPACL_ChanGroup*)[[[MPACL_ChanGroup builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPACL_ChanGroup_Builder*) builder {
-  return [[[MPACL_ChanGroup_Builder alloc] init] autorelease];
+  return [[MPACL_ChanGroup_Builder alloc] init];
 }
 + (MPACL_ChanGroup_Builder*) builderWithPrototype:(MPACL_ChanGroup*) prototype {
   return [[MPACL_ChanGroup builder] mergeFrom:prototype];
@@ -7301,11 +7301,11 @@ static MPACL_ChanGroup* defaultMPACL_ChanGroupInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPACL_ChanGroup alloc] init] autorelease];
+    self.result = [[MPACL_ChanGroup alloc] init];
   }
   return self;
 }
@@ -7313,7 +7313,7 @@ static MPACL_ChanGroup* defaultMPACL_ChanGroupInstance = nil;
   return result;
 }
 - (MPACL_ChanGroup_Builder*) clear {
-  self.result = [[[MPACL_ChanGroup alloc] init] autorelease];
+  self.result = [[MPACL_ChanGroup alloc] init];
   return self;
 }
 - (MPACL_ChanGroup_Builder*) clone {
@@ -7327,7 +7327,7 @@ static MPACL_ChanGroup* defaultMPACL_ChanGroupInstance = nil;
   return [self buildPartial];
 }
 - (MPACL_ChanGroup*) buildPartial {
-  MPACL_ChanGroup* returnMe = [[result retain] autorelease];
+  MPACL_ChanGroup* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -7349,21 +7349,21 @@ static MPACL_ChanGroup* defaultMPACL_ChanGroupInstance = nil;
   }
   if (other.addArray.count > 0) {
     if (result.addArray == nil) {
-      result.addArray = [[other.addArray copyWithZone:[other.addArray zone]] autorelease];
+      result.addArray = [other.addArray copy];
     } else {
       [result.addArray appendArray:other.addArray];
     }
   }
   if (other.removeArray.count > 0) {
     if (result.removeArray == nil) {
-      result.removeArray = [[other.removeArray copyWithZone:[other.removeArray zone]] autorelease];
+      result.removeArray = [other.removeArray copy];
     } else {
       [result.removeArray appendArray:other.removeArray];
     }
   }
   if (other.inheritedMembersArray.count > 0) {
     if (result.inheritedMembersArray == nil) {
-      result.inheritedMembersArray = [[other.inheritedMembersArray copyWithZone:[other.inheritedMembersArray zone]] autorelease];
+      result.inheritedMembersArray = [other.inheritedMembersArray copy];
     } else {
       [result.inheritedMembersArray appendArray:other.inheritedMembersArray];
     }
@@ -7639,7 +7639,7 @@ static MPACL_ChanGroup* defaultMPACL_ChanGroupInstance = nil;
 @synthesize deny;
 - (void) dealloc {
   self.group = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -7743,7 +7743,7 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
   return (MPACL_ChanACL*)[[[MPACL_ChanACL builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPACL_ChanACL_Builder*) builder {
-  return [[[MPACL_ChanACL_Builder alloc] init] autorelease];
+  return [[MPACL_ChanACL_Builder alloc] init];
 }
 + (MPACL_ChanACL_Builder*) builderWithPrototype:(MPACL_ChanACL*) prototype {
   return [[MPACL_ChanACL builder] mergeFrom:prototype];
@@ -7839,11 +7839,11 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPACL_ChanACL alloc] init] autorelease];
+    self.result = [[MPACL_ChanACL alloc] init];
   }
   return self;
 }
@@ -7851,7 +7851,7 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
   return result;
 }
 - (MPACL_ChanACL_Builder*) clear {
-  self.result = [[[MPACL_ChanACL alloc] init] autorelease];
+  self.result = [[MPACL_ChanACL alloc] init];
   return self;
 }
 - (MPACL_ChanACL_Builder*) clone {
@@ -7865,7 +7865,7 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
   return [self buildPartial];
 }
 - (MPACL_ChanACL*) buildPartial {
-  MPACL_ChanACL* returnMe = [[result retain] autorelease];
+  MPACL_ChanACL* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -8068,11 +8068,11 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPACL alloc] init] autorelease];
+    self.result = [[MPACL alloc] init];
   }
   return self;
 }
@@ -8080,7 +8080,7 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
   return result;
 }
 - (MPACL_Builder*) clear {
-  self.result = [[[MPACL alloc] init] autorelease];
+  self.result = [[MPACL alloc] init];
   return self;
 }
 - (MPACL_Builder*) clone {
@@ -8094,7 +8094,7 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
   return [self buildPartial];
 }
 - (MPACL*) buildPartial {
-  MPACL* returnMe = [[result retain] autorelease];
+  MPACL* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -8110,14 +8110,14 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
   }
   if (other.groupsArray.count > 0) {
     if (result.groupsArray == nil) {
-      result.groupsArray = [[other.groupsArray copyWithZone:[other.groupsArray zone]] autorelease];
+      result.groupsArray = [other.groupsArray copy];
     } else {
       [result.groupsArray appendArray:other.groupsArray];
     }
   }
   if (other.aclsArray.count > 0) {
     if (result.aclsArray == nil) {
-      result.aclsArray = [[other.aclsArray copyWithZone:[other.aclsArray zone]] autorelease];
+      result.aclsArray = [other.aclsArray copy];
     } else {
       [result.aclsArray appendArray:other.aclsArray];
     }
@@ -8287,7 +8287,7 @@ static MPACL_ChanACL* defaultMPACL_ChanACLInstance = nil;
 - (void) dealloc {
   self.idsArray = nil;
   self.namesArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -8331,9 +8331,9 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   }
   const NSUInteger namesArrayCount = self.namesArray.count;
   if (namesArrayCount > 0) {
-    const NSString* *values = (const NSString* *)self.namesArray.data;
+    const void* *values = (const void* *)self.namesArray.data;
     for (NSUInteger i = 0; i < namesArrayCount; ++i) {
-      [output writeString:2 value:values[i]];
+      [output writeString:2 value:(__bridge const NSString *)(values[i])];
     }
   }
   [self.unknownFields writeToCodedOutputStream:output];
@@ -8358,9 +8358,9 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   {
     int32_t dataSize = 0;
     const NSUInteger count = self.namesArray.count;
-    const NSString* *values = (const NSString* *)self.namesArray.data;
+    const void* *values = (const void* *)self.namesArray.data;
     for (NSUInteger i = 0; i < count; ++i) {
-      dataSize += computeStringSizeNoTag(values[i]);
+      dataSize += computeStringSizeNoTag((__bridge const NSString *)(values[i]));
     }
     size += dataSize;
     size += 1 * count;
@@ -8388,7 +8388,7 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   return (MPQueryUsers*)[[[MPQueryUsers builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPQueryUsers_Builder*) builder {
-  return [[[MPQueryUsers_Builder alloc] init] autorelease];
+  return [[MPQueryUsers_Builder alloc] init];
 }
 + (MPQueryUsers_Builder*) builderWithPrototype:(MPQueryUsers*) prototype {
   return [[MPQueryUsers builder] mergeFrom:prototype];
@@ -8442,11 +8442,11 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPQueryUsers alloc] init] autorelease];
+    self.result = [[MPQueryUsers alloc] init];
   }
   return self;
 }
@@ -8454,7 +8454,7 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   return result;
 }
 - (MPQueryUsers_Builder*) clear {
-  self.result = [[[MPQueryUsers alloc] init] autorelease];
+  self.result = [[MPQueryUsers alloc] init];
   return self;
 }
 - (MPQueryUsers_Builder*) clone {
@@ -8468,7 +8468,7 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   return [self buildPartial];
 }
 - (MPQueryUsers*) buildPartial {
-  MPQueryUsers* returnMe = [[result retain] autorelease];
+  MPQueryUsers* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -8478,14 +8478,14 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   }
   if (other.idsArray.count > 0) {
     if (result.idsArray == nil) {
-      result.idsArray = [[other.idsArray copyWithZone:[other.idsArray zone]] autorelease];
+      result.idsArray = [other.idsArray copy];
     } else {
       [result.idsArray appendArray:other.idsArray];
     }
   }
   if (other.namesArray.count > 0) {
     if (result.namesArray == nil) {
-      result.namesArray = [[other.namesArray copyWithZone:[other.namesArray zone]] autorelease];
+      result.namesArray = [other.namesArray copy];
     } else {
       [result.namesArray appendArray:other.namesArray];
     }
@@ -8607,7 +8607,7 @@ static MPQueryUsers* defaultMPQueryUsersInstance = nil;
   self.key = nil;
   self.clientNonce = nil;
   self.serverNonce = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -8683,7 +8683,7 @@ static MPCryptSetup* defaultMPCryptSetupInstance = nil;
   return (MPCryptSetup*)[[[MPCryptSetup builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPCryptSetup_Builder*) builder {
-  return [[[MPCryptSetup_Builder alloc] init] autorelease];
+  return [[MPCryptSetup_Builder alloc] init];
 }
 + (MPCryptSetup_Builder*) builderWithPrototype:(MPCryptSetup*) prototype {
   return [[MPCryptSetup builder] mergeFrom:prototype];
@@ -8747,11 +8747,11 @@ static MPCryptSetup* defaultMPCryptSetupInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPCryptSetup alloc] init] autorelease];
+    self.result = [[MPCryptSetup alloc] init];
   }
   return self;
 }
@@ -8759,7 +8759,7 @@ static MPCryptSetup* defaultMPCryptSetupInstance = nil;
   return result;
 }
 - (MPCryptSetup_Builder*) clear {
-  self.result = [[[MPCryptSetup alloc] init] autorelease];
+  self.result = [[MPCryptSetup alloc] init];
   return self;
 }
 - (MPCryptSetup_Builder*) clone {
@@ -8773,7 +8773,7 @@ static MPCryptSetup* defaultMPCryptSetupInstance = nil;
   return [self buildPartial];
 }
 - (MPCryptSetup*) buildPartial {
-  MPCryptSetup* returnMe = [[result retain] autorelease];
+  MPCryptSetup* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -8916,7 +8916,7 @@ static MPCryptSetup* defaultMPCryptSetupInstance = nil;
 - (void) dealloc {
   self.action = nil;
   self.text = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -9002,7 +9002,7 @@ static MPContextActionModify* defaultMPContextActionModifyInstance = nil;
   return (MPContextActionModify*)[[[MPContextActionModify builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPContextActionModify_Builder*) builder {
-  return [[[MPContextActionModify_Builder alloc] init] autorelease];
+  return [[MPContextActionModify_Builder alloc] init];
 }
 + (MPContextActionModify_Builder*) builderWithPrototype:(MPContextActionModify*) prototype {
   return [[MPContextActionModify builder] mergeFrom:prototype];
@@ -9093,11 +9093,11 @@ BOOL MPContextActionModify_OperationIsValidValue(MPContextActionModify_Operation
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPContextActionModify alloc] init] autorelease];
+    self.result = [[MPContextActionModify alloc] init];
   }
   return self;
 }
@@ -9105,7 +9105,7 @@ BOOL MPContextActionModify_OperationIsValidValue(MPContextActionModify_Operation
   return result;
 }
 - (MPContextActionModify_Builder*) clear {
-  self.result = [[[MPContextActionModify alloc] init] autorelease];
+  self.result = [[MPContextActionModify alloc] init];
   return self;
 }
 - (MPContextActionModify_Builder*) clone {
@@ -9119,7 +9119,7 @@ BOOL MPContextActionModify_OperationIsValidValue(MPContextActionModify_Operation
   return [self buildPartial];
 }
 - (MPContextActionModify*) buildPartial {
-  MPContextActionModify* returnMe = [[result retain] autorelease];
+  MPContextActionModify* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -9281,7 +9281,7 @@ BOOL MPContextActionModify_OperationIsValidValue(MPContextActionModify_Operation
 @synthesize action;
 - (void) dealloc {
   self.action = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -9360,7 +9360,7 @@ static MPContextAction* defaultMPContextActionInstance = nil;
   return (MPContextAction*)[[[MPContextAction builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPContextAction_Builder*) builder {
-  return [[[MPContextAction_Builder alloc] init] autorelease];
+  return [[MPContextAction_Builder alloc] init];
 }
 + (MPContextAction_Builder*) builderWithPrototype:(MPContextAction*) prototype {
   return [[MPContextAction builder] mergeFrom:prototype];
@@ -9424,11 +9424,11 @@ static MPContextAction* defaultMPContextActionInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPContextAction alloc] init] autorelease];
+    self.result = [[MPContextAction alloc] init];
   }
   return self;
 }
@@ -9436,7 +9436,7 @@ static MPContextAction* defaultMPContextActionInstance = nil;
   return result;
 }
 - (MPContextAction_Builder*) clear {
-  self.result = [[[MPContextAction alloc] init] autorelease];
+  self.result = [[MPContextAction alloc] init];
   return self;
 }
 - (MPContextAction_Builder*) clone {
@@ -9450,7 +9450,7 @@ static MPContextAction* defaultMPContextActionInstance = nil;
   return [self buildPartial];
 }
 - (MPContextAction*) buildPartial {
-  MPContextAction* returnMe = [[result retain] autorelease];
+  MPContextAction* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -9563,7 +9563,7 @@ static MPContextAction* defaultMPContextActionInstance = nil;
 @dynamic users;
 - (void) dealloc {
   self.usersArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -9635,7 +9635,7 @@ static MPUserList* defaultMPUserListInstance = nil;
   return (MPUserList*)[[[MPUserList builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUserList_Builder*) builder {
-  return [[[MPUserList_Builder alloc] init] autorelease];
+  return [[MPUserList_Builder alloc] init];
 }
 + (MPUserList_Builder*) builderWithPrototype:(MPUserList*) prototype {
   return [[MPUserList builder] mergeFrom:prototype];
@@ -9700,7 +9700,7 @@ static MPUserList* defaultMPUserListInstance = nil;
 @synthesize name;
 - (void) dealloc {
   self.name = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -9772,7 +9772,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
   return (MPUserList_User*)[[[MPUserList_User builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUserList_User_Builder*) builder {
-  return [[[MPUserList_User_Builder alloc] init] autorelease];
+  return [[MPUserList_User_Builder alloc] init];
 }
 + (MPUserList_User_Builder*) builderWithPrototype:(MPUserList_User*) prototype {
   return [[MPUserList_User builder] mergeFrom:prototype];
@@ -9828,11 +9828,11 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUserList_User alloc] init] autorelease];
+    self.result = [[MPUserList_User alloc] init];
   }
   return self;
 }
@@ -9840,7 +9840,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
   return result;
 }
 - (MPUserList_User_Builder*) clear {
-  self.result = [[[MPUserList_User alloc] init] autorelease];
+  self.result = [[MPUserList_User alloc] init];
   return self;
 }
 - (MPUserList_User_Builder*) clone {
@@ -9854,7 +9854,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
   return [self buildPartial];
 }
 - (MPUserList_User*) buildPartial {
-  MPUserList_User* returnMe = [[result retain] autorelease];
+  MPUserList_User* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -9942,11 +9942,11 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUserList alloc] init] autorelease];
+    self.result = [[MPUserList alloc] init];
   }
   return self;
 }
@@ -9954,7 +9954,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
   return result;
 }
 - (MPUserList_Builder*) clear {
-  self.result = [[[MPUserList alloc] init] autorelease];
+  self.result = [[MPUserList alloc] init];
   return self;
 }
 - (MPUserList_Builder*) clone {
@@ -9968,7 +9968,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
   return [self buildPartial];
 }
 - (MPUserList*) buildPartial {
-  MPUserList* returnMe = [[result retain] autorelease];
+  MPUserList* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -9978,7 +9978,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
   }
   if (other.usersArray.count > 0) {
     if (result.usersArray == nil) {
-      result.usersArray = [[other.usersArray copyWithZone:[other.usersArray zone]] autorelease];
+      result.usersArray = [other.usersArray copy];
     } else {
       [result.usersArray appendArray:other.usersArray];
     }
@@ -10058,7 +10058,7 @@ static MPUserList_User* defaultMPUserList_UserInstance = nil;
 @dynamic targets;
 - (void) dealloc {
   self.targetsArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -10132,7 +10132,7 @@ static MPVoiceTarget* defaultMPVoiceTargetInstance = nil;
   return (MPVoiceTarget*)[[[MPVoiceTarget builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPVoiceTarget_Builder*) builder {
-  return [[[MPVoiceTarget_Builder alloc] init] autorelease];
+  return [[MPVoiceTarget_Builder alloc] init];
 }
 + (MPVoiceTarget_Builder*) builderWithPrototype:(MPVoiceTarget*) prototype {
   return [[MPVoiceTarget builder] mergeFrom:prototype];
@@ -10235,7 +10235,7 @@ static MPVoiceTarget* defaultMPVoiceTargetInstance = nil;
 - (void) dealloc {
   self.sessionArray = nil;
   self.group = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -10341,7 +10341,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   return (MPVoiceTarget_Target*)[[[MPVoiceTarget_Target builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPVoiceTarget_Target_Builder*) builder {
-  return [[[MPVoiceTarget_Target_Builder alloc] init] autorelease];
+  return [[MPVoiceTarget_Target_Builder alloc] init];
 }
 + (MPVoiceTarget_Target_Builder*) builderWithPrototype:(MPVoiceTarget_Target*) prototype {
   return [[MPVoiceTarget_Target builder] mergeFrom:prototype];
@@ -10420,11 +10420,11 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPVoiceTarget_Target alloc] init] autorelease];
+    self.result = [[MPVoiceTarget_Target alloc] init];
   }
   return self;
 }
@@ -10432,7 +10432,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   return result;
 }
 - (MPVoiceTarget_Target_Builder*) clear {
-  self.result = [[[MPVoiceTarget_Target alloc] init] autorelease];
+  self.result = [[MPVoiceTarget_Target alloc] init];
   return self;
 }
 - (MPVoiceTarget_Target_Builder*) clone {
@@ -10446,7 +10446,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   return [self buildPartial];
 }
 - (MPVoiceTarget_Target*) buildPartial {
-  MPVoiceTarget_Target* returnMe = [[result retain] autorelease];
+  MPVoiceTarget_Target* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -10456,7 +10456,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   }
   if (other.sessionArray.count > 0) {
     if (result.sessionArray == nil) {
-      result.sessionArray = [[other.sessionArray copyWithZone:[other.sessionArray zone]] autorelease];
+      result.sessionArray = [other.sessionArray copy];
     } else {
       [result.sessionArray appendArray:other.sessionArray];
     }
@@ -10616,11 +10616,11 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPVoiceTarget alloc] init] autorelease];
+    self.result = [[MPVoiceTarget alloc] init];
   }
   return self;
 }
@@ -10628,7 +10628,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   return result;
 }
 - (MPVoiceTarget_Builder*) clear {
-  self.result = [[[MPVoiceTarget alloc] init] autorelease];
+  self.result = [[MPVoiceTarget alloc] init];
   return self;
 }
 - (MPVoiceTarget_Builder*) clone {
@@ -10642,7 +10642,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   return [self buildPartial];
 }
 - (MPVoiceTarget*) buildPartial {
-  MPVoiceTarget* returnMe = [[result retain] autorelease];
+  MPVoiceTarget* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -10655,7 +10655,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   }
   if (other.targetsArray.count > 0) {
     if (result.targetsArray == nil) {
-      result.targetsArray = [[other.targetsArray copyWithZone:[other.targetsArray zone]] autorelease];
+      result.targetsArray = [other.targetsArray copy];
     } else {
       [result.targetsArray appendArray:other.targetsArray];
     }
@@ -10772,7 +10772,7 @@ static MPVoiceTarget_Target* defaultMPVoiceTarget_TargetInstance = nil;
   flush_ = !!value;
 }
 - (void) dealloc {
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -10848,7 +10848,7 @@ static MPPermissionQuery* defaultMPPermissionQueryInstance = nil;
   return (MPPermissionQuery*)[[[MPPermissionQuery builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPPermissionQuery_Builder*) builder {
-  return [[[MPPermissionQuery_Builder alloc] init] autorelease];
+  return [[MPPermissionQuery_Builder alloc] init];
 }
 + (MPPermissionQuery_Builder*) builderWithPrototype:(MPPermissionQuery*) prototype {
   return [[MPPermissionQuery builder] mergeFrom:prototype];
@@ -10912,11 +10912,11 @@ static MPPermissionQuery* defaultMPPermissionQueryInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPPermissionQuery alloc] init] autorelease];
+    self.result = [[MPPermissionQuery alloc] init];
   }
   return self;
 }
@@ -10924,7 +10924,7 @@ static MPPermissionQuery* defaultMPPermissionQueryInstance = nil;
   return result;
 }
 - (MPPermissionQuery_Builder*) clear {
-  self.result = [[[MPPermissionQuery alloc] init] autorelease];
+  self.result = [[MPPermissionQuery alloc] init];
   return self;
 }
 - (MPPermissionQuery_Builder*) clone {
@@ -10938,7 +10938,7 @@ static MPPermissionQuery* defaultMPPermissionQueryInstance = nil;
   return [self buildPartial];
 }
 - (MPPermissionQuery*) buildPartial {
-  MPPermissionQuery* returnMe = [[result retain] autorelease];
+  MPPermissionQuery* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -11089,7 +11089,7 @@ static MPPermissionQuery* defaultMPPermissionQueryInstance = nil;
   opus_ = !!value;
 }
 - (void) dealloc {
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -11181,7 +11181,7 @@ static MPCodecVersion* defaultMPCodecVersionInstance = nil;
   return (MPCodecVersion*)[[[MPCodecVersion builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPCodecVersion_Builder*) builder {
-  return [[[MPCodecVersion_Builder alloc] init] autorelease];
+  return [[MPCodecVersion_Builder alloc] init];
 }
 + (MPCodecVersion_Builder*) builderWithPrototype:(MPCodecVersion*) prototype {
   return [[MPCodecVersion builder] mergeFrom:prototype];
@@ -11253,11 +11253,11 @@ static MPCodecVersion* defaultMPCodecVersionInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPCodecVersion alloc] init] autorelease];
+    self.result = [[MPCodecVersion alloc] init];
   }
   return self;
 }
@@ -11265,7 +11265,7 @@ static MPCodecVersion* defaultMPCodecVersionInstance = nil;
   return result;
 }
 - (MPCodecVersion_Builder*) clear {
-  self.result = [[[MPCodecVersion alloc] init] autorelease];
+  self.result = [[MPCodecVersion alloc] init];
   return self;
 }
 - (MPCodecVersion_Builder*) clone {
@@ -11279,7 +11279,7 @@ static MPCodecVersion* defaultMPCodecVersionInstance = nil;
   return [self buildPartial];
 }
 - (MPCodecVersion*) buildPartial {
-  MPCodecVersion* returnMe = [[result retain] autorelease];
+  MPCodecVersion* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -11574,7 +11574,7 @@ static MPCodecVersion* defaultMPCodecVersionInstance = nil;
   self.version = nil;
   self.celtVersionsArray = nil;
   self.address = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -11634,9 +11634,9 @@ static MPUserStats* defaultMPUserStatsInstance = nil;
   }
   const NSUInteger certificatesArrayCount = self.certificatesArray.count;
   if (certificatesArrayCount > 0) {
-    const NSData* *values = (const NSData* *)self.certificatesArray.data;
+    const void* *values = (const void* *)self.certificatesArray.data;
     for (NSUInteger i = 0; i < certificatesArrayCount; ++i) {
-      [output writeData:3 value:values[i]];
+      [output writeData:3 value:(__bridge const NSData *)(values[i])];
     }
   }
   if (self.hasFromClient) {
@@ -11709,9 +11709,9 @@ static MPUserStats* defaultMPUserStatsInstance = nil;
   {
     int32_t dataSize = 0;
     const NSUInteger count = self.certificatesArray.count;
-    const NSData* *values = (const NSData* *)self.certificatesArray.data;
+    const void* *values = (const void* *)self.certificatesArray.data;
     for (NSUInteger i = 0; i < count; ++i) {
-      dataSize += computeDataSizeNoTag(values[i]);
+      dataSize += computeDataSizeNoTag((__bridge const NSData *)(values[i]));
     }
     size += dataSize;
     size += 1 * count;
@@ -11794,7 +11794,7 @@ static MPUserStats* defaultMPUserStatsInstance = nil;
   return (MPUserStats*)[[[MPUserStats builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUserStats_Builder*) builder {
-  return [[[MPUserStats_Builder alloc] init] autorelease];
+  return [[MPUserStats_Builder alloc] init];
 }
 + (MPUserStats_Builder*) builderWithPrototype:(MPUserStats*) prototype {
   return [[MPUserStats builder] mergeFrom:prototype];
@@ -12023,7 +12023,7 @@ static MPUserStats* defaultMPUserStatsInstance = nil;
 }
 @synthesize resync;
 - (void) dealloc {
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -12106,7 +12106,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   return (MPUserStats_Stats*)[[[MPUserStats_Stats builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPUserStats_Stats_Builder*) builder {
-  return [[[MPUserStats_Stats_Builder alloc] init] autorelease];
+  return [[MPUserStats_Stats_Builder alloc] init];
 }
 + (MPUserStats_Stats_Builder*) builderWithPrototype:(MPUserStats_Stats*) prototype {
   return [[MPUserStats_Stats builder] mergeFrom:prototype];
@@ -12178,11 +12178,11 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUserStats_Stats alloc] init] autorelease];
+    self.result = [[MPUserStats_Stats alloc] init];
   }
   return self;
 }
@@ -12190,7 +12190,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   return result;
 }
 - (MPUserStats_Stats_Builder*) clear {
-  self.result = [[[MPUserStats_Stats alloc] init] autorelease];
+  self.result = [[MPUserStats_Stats alloc] init];
   return self;
 }
 - (MPUserStats_Stats_Builder*) clone {
@@ -12204,7 +12204,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   return [self buildPartial];
 }
 - (MPUserStats_Stats*) buildPartial {
-  MPUserStats_Stats* returnMe = [[result retain] autorelease];
+  MPUserStats_Stats* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -12338,11 +12338,11 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPUserStats alloc] init] autorelease];
+    self.result = [[MPUserStats alloc] init];
   }
   return self;
 }
@@ -12350,7 +12350,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   return result;
 }
 - (MPUserStats_Builder*) clear {
-  self.result = [[[MPUserStats alloc] init] autorelease];
+  self.result = [[MPUserStats alloc] init];
   return self;
 }
 - (MPUserStats_Builder*) clone {
@@ -12364,7 +12364,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   return [self buildPartial];
 }
 - (MPUserStats*) buildPartial {
-  MPUserStats* returnMe = [[result retain] autorelease];
+  MPUserStats* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -12380,7 +12380,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   }
   if (other.certificatesArray.count > 0) {
     if (result.certificatesArray == nil) {
-      result.certificatesArray = [[other.certificatesArray copyWithZone:[other.certificatesArray zone]] autorelease];
+      result.certificatesArray = [other.certificatesArray copy];
     } else {
       [result.certificatesArray appendArray:other.certificatesArray];
     }
@@ -12414,7 +12414,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   }
   if (other.celtVersionsArray.count > 0) {
     if (result.celtVersionsArray == nil) {
-      result.celtVersionsArray = [[other.celtVersionsArray copyWithZone:[other.celtVersionsArray zone]] autorelease];
+      result.celtVersionsArray = [other.celtVersionsArray copy];
     } else {
       [result.celtVersionsArray appendArray:other.celtVersionsArray];
     }
@@ -12958,7 +12958,7 @@ static MPUserStats_Stats* defaultMPUserStats_StatsInstance = nil;
   pushToTalk_ = !!value;
 }
 - (void) dealloc {
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -13034,7 +13034,7 @@ static MPSuggestConfig* defaultMPSuggestConfigInstance = nil;
   return (MPSuggestConfig*)[[[MPSuggestConfig builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPSuggestConfig_Builder*) builder {
-  return [[[MPSuggestConfig_Builder alloc] init] autorelease];
+  return [[MPSuggestConfig_Builder alloc] init];
 }
 + (MPSuggestConfig_Builder*) builderWithPrototype:(MPSuggestConfig*) prototype {
   return [[MPSuggestConfig builder] mergeFrom:prototype];
@@ -13098,11 +13098,11 @@ static MPSuggestConfig* defaultMPSuggestConfigInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPSuggestConfig alloc] init] autorelease];
+    self.result = [[MPSuggestConfig alloc] init];
   }
   return self;
 }
@@ -13110,7 +13110,7 @@ static MPSuggestConfig* defaultMPSuggestConfigInstance = nil;
   return result;
 }
 - (MPSuggestConfig_Builder*) clear {
-  self.result = [[[MPSuggestConfig alloc] init] autorelease];
+  self.result = [[MPSuggestConfig alloc] init];
   return self;
 }
 - (MPSuggestConfig_Builder*) clone {
@@ -13124,7 +13124,7 @@ static MPSuggestConfig* defaultMPSuggestConfigInstance = nil;
   return [self buildPartial];
 }
 - (MPSuggestConfig*) buildPartial {
-  MPSuggestConfig* returnMe = [[result retain] autorelease];
+  MPSuggestConfig* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -13245,7 +13245,7 @@ static MPSuggestConfig* defaultMPSuggestConfigInstance = nil;
   self.sessionTextureArray = nil;
   self.sessionCommentArray = nil;
   self.channelDescriptionArray = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
@@ -13369,7 +13369,7 @@ static MPRequestBlob* defaultMPRequestBlobInstance = nil;
   return (MPRequestBlob*)[[[MPRequestBlob builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
 + (MPRequestBlob_Builder*) builder {
-  return [[[MPRequestBlob_Builder alloc] init] autorelease];
+  return [[MPRequestBlob_Builder alloc] init];
 }
 + (MPRequestBlob_Builder*) builderWithPrototype:(MPRequestBlob*) prototype {
   return [[MPRequestBlob builder] mergeFrom:prototype];
@@ -13430,11 +13430,11 @@ static MPRequestBlob* defaultMPRequestBlobInstance = nil;
 @synthesize result;
 - (void) dealloc {
   self.result = nil;
-  [super dealloc];
+  // [super dealloc];
 }
 - (id) init {
   if ((self = [super init])) {
-    self.result = [[[MPRequestBlob alloc] init] autorelease];
+    self.result = [[MPRequestBlob alloc] init];
   }
   return self;
 }
@@ -13442,7 +13442,7 @@ static MPRequestBlob* defaultMPRequestBlobInstance = nil;
   return result;
 }
 - (MPRequestBlob_Builder*) clear {
-  self.result = [[[MPRequestBlob alloc] init] autorelease];
+  self.result = [[MPRequestBlob alloc] init];
   return self;
 }
 - (MPRequestBlob_Builder*) clone {
@@ -13456,7 +13456,7 @@ static MPRequestBlob* defaultMPRequestBlobInstance = nil;
   return [self buildPartial];
 }
 - (MPRequestBlob*) buildPartial {
-  MPRequestBlob* returnMe = [[result retain] autorelease];
+  MPRequestBlob* returnMe = result;
   self.result = nil;
   return returnMe;
 }
@@ -13466,21 +13466,21 @@ static MPRequestBlob* defaultMPRequestBlobInstance = nil;
   }
   if (other.sessionTextureArray.count > 0) {
     if (result.sessionTextureArray == nil) {
-      result.sessionTextureArray = [[other.sessionTextureArray copyWithZone:[other.sessionTextureArray zone]] autorelease];
+      result.sessionTextureArray = [other.sessionTextureArray copy];
     } else {
       [result.sessionTextureArray appendArray:other.sessionTextureArray];
     }
   }
   if (other.sessionCommentArray.count > 0) {
     if (result.sessionCommentArray == nil) {
-      result.sessionCommentArray = [[other.sessionCommentArray copyWithZone:[other.sessionCommentArray zone]] autorelease];
+      result.sessionCommentArray = [other.sessionCommentArray copy];
     } else {
       [result.sessionCommentArray appendArray:other.sessionCommentArray];
     }
   }
   if (other.channelDescriptionArray.count > 0) {
     if (result.channelDescriptionArray == nil) {
-      result.channelDescriptionArray = [[other.channelDescriptionArray copyWithZone:[other.channelDescriptionArray zone]] autorelease];
+      result.channelDescriptionArray = [other.channelDescriptionArray copy];
     } else {
       [result.channelDescriptionArray appendArray:other.channelDescriptionArray];
     }

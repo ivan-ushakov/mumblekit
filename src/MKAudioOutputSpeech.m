@@ -170,10 +170,10 @@
     if (_resamplerBuffer)
         free(_resamplerBuffer);
 
-    [_jitterLock release];
-    [_frames release];
+    // [_jitterLock release];
+    // [_frames release];
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 - (NSUInteger) userSession {
@@ -202,13 +202,13 @@
         if (size > 0) {
             NSData *opusFrames = [pds copyDataBlock:size];
             if ([opusFrames length] != (NSUInteger)size || ![pds valid]) {
-                [pds release];
+                // [pds release];
                 [_jitterLock unlock];
                 return;
             }
             int nframes = opus_packet_get_nb_frames([opusFrames bytes], size);
             samples = nframes * opus_packet_get_samples_per_frame([opusFrames bytes], SAMPLE_RATE);
-            [opusFrames release];
+            // [opusFrames release];
         } else {
             // Prevents a jitter buffer warning for terminator packets.
             samples = 1 * _frameSize;
@@ -223,7 +223,7 @@
     }
 
     if (! [pds valid]) {
-        [pds release];
+        // [pds release];
         NSLog(@"addFrame:: Invalid pds.");
         [_jitterLock unlock];
         return;
@@ -239,7 +239,7 @@
         jitter_buffer_put(_jitter, &jbp);
     }
 
-    [pds release];
+    // [pds release];
     
     [_jitterLock unlock];
 }
@@ -318,7 +318,7 @@
                             NSData *block = [pds copyDataBlock:size];
                             if (block != nil) {
                                 [_frames addObject:block];
-                                [block release];
+                                // [block release];
                             }
                         }
                     } else {
@@ -329,7 +329,7 @@
                                 NSData *block = [pds copyDataBlock:(header & 0x7f)];
                                 if (block != nil) {
                                     [_frames addObject:block];
-                                    [block release];
+                                    // [block release];
                                 }
                             } else {
                                 _hasTerminator = YES;
@@ -347,7 +347,7 @@
                         _pos[2] = 0.0f;
                     }
 
-                    [pds release];
+                    // [pds release];
 
                     float a = (float) avail;
                     if (a >= _averageAvailable) {

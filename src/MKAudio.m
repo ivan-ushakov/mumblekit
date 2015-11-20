@@ -43,7 +43,7 @@ NSString *MKAudioDidRestartNotification = @"MKAudioDidRestartNotification";
 
 #if TARGET_OS_IPHONE == 1
 static void MKAudio_InterruptCallback(void *udata, UInt32 interrupt) {
-    MKAudio *audio = (MKAudio *) udata;
+    MKAudio *audio = (__bridge MKAudio *) udata;
 
     if (interrupt == kAudioSessionBeginInterruption) {
         [audio stop];
@@ -137,7 +137,7 @@ static void MKAudio_SetupAudioSession(MKAudio *audio) {
     BOOL audioInputAvailable = YES;
     
     // Initialize Audio Session
-    err = AudioSessionInitialize(CFRunLoopGetMain(), kCFRunLoopDefaultMode, MKAudio_InterruptCallback, audio);
+    err = AudioSessionInitialize(CFRunLoopGetMain(), kCFRunLoopDefaultMode, MKAudio_InterruptCallback, (__bridge void *)(audio));
     if (err != kAudioSessionNoError) {
         NSLog(@"MKAudio: unable to initialize AudioSession.");
         return;
@@ -146,7 +146,7 @@ static void MKAudio_SetupAudioSession(MKAudio *audio) {
     // Listen for audio route changes
     err = AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange,
                                           (AudioSessionPropertyListener) MKAudio_AudioRouteChangedCallback,
-                                          audio);
+                                          (__bridge void *)(audio));
     if (err != kAudioSessionNoError) {
         NSLog(@"MKAudio: unable to register property listener for AudioRouteChange.");
         return;
@@ -155,7 +155,7 @@ static void MKAudio_SetupAudioSession(MKAudio *audio) {
     // Listen for audio input availability changes
     err = AudioSessionAddPropertyListener(kAudioSessionProperty_AudioInputAvailable,
                                           (AudioSessionPropertyListener)MKAudio_AudioInputAvailableCallback,
-                                          audio);
+                                          (__bridge void *)(audio));
     if (err != kAudioSessionNoError) {
         NSLog(@"MKAudio: unable to register property listener for AudioInputAvailable.");
         return;
@@ -344,14 +344,14 @@ static void MKAudio_UpdateAudioSessionSettings(MKAudio *audio) {
 // Stop the audio engine
 - (void) stop {
     @synchronized(self) {
-        [_audioInput release];
+        // [_audioInput release];
         _audioInput = nil;
-        [_audioOutput release];
+        // [_audioOutput release];
         _audioOutput = nil;
         [_audioDevice teardownDevice];
-        [_audioDevice release];
+        // [_audioDevice release];
         _audioDevice = nil;
-        [_sidetoneOutput release];
+        // [_sidetoneOutput release];
         _sidetoneOutput = nil;
         _running = NO;
     }
@@ -399,9 +399,9 @@ static void MKAudio_UpdateAudioSessionSettings(MKAudio *audio) {
 
 - (void) setMainConnectionForAudio:(MKConnection *)conn {
     @synchronized(self) {
-        [conn retain];
+        // [conn retain];
         [_audioInput setMainConnectionForAudio:conn];
-        [_connection release];
+        // [_connection release];
         _connection = conn;
     }
 }

@@ -26,7 +26,7 @@
 
 static OSStatus inputCallback(void *udata, AudioUnitRenderActionFlags *flags, const AudioTimeStamp *ts,
                               UInt32 busnum, UInt32 nframes, AudioBufferList *buflist) {
-    MKiOSAudioDevice *dev = (MKiOSAudioDevice *)udata;
+    MKiOSAudioDevice *dev = (__bridge MKiOSAudioDevice *)udata;
     OSStatus err;
     
     if (! dev->_buflist.mBuffers->mData) {
@@ -54,20 +54,20 @@ static OSStatus inputCallback(void *udata, AudioUnitRenderActionFlags *flags, co
         return err;
     }
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     short *buf = (short *) dev->_buflist.mBuffers->mData;
     MKAudioDeviceInputFunc inputFunc = dev->_inputFunc;
     if (inputFunc) {
         inputFunc(buf, nframes);
     }
-    [pool release];
+    // [pool release];
     
     return noErr;
 }
 
 static OSStatus outputCallback(void *udata, AudioUnitRenderActionFlags *flags, const AudioTimeStamp *ts,
                                UInt32 busnum, UInt32 nframes, AudioBufferList *buflist) {
-    MKiOSAudioDevice *dev = (MKiOSAudioDevice *) udata;
+    MKiOSAudioDevice *dev = (__bridge MKiOSAudioDevice *) udata;
     AudioBuffer *buf = buflist->mBuffers;
     MKAudioDeviceOutputFunc outputFunc = dev->_outputFunc;
     BOOL done;
@@ -78,16 +78,16 @@ static OSStatus outputCallback(void *udata, AudioUnitRenderActionFlags *flags, c
         return -1;
     }
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     done = outputFunc(buf->mData, nframes);
     if (! done) {
         // No frames available yet.
         buf->mDataByteSize = 0;
-        [pool release];
+        // [pool release];
         return -1;
     }
     
-    [pool release];
+    // [pool release];
     return noErr;
 }
 
@@ -101,9 +101,9 @@ static OSStatus outputCallback(void *udata, AudioUnitRenderActionFlags *flags, c
 }
 
 - (void) dealloc {
-    [_inputFunc release];
-    [_outputFunc release];
-    [super dealloc];
+    // [_inputFunc release];
+    // [_outputFunc release];
+    // [super dealloc];
 }
 
 - (BOOL) setupDevice {
@@ -148,7 +148,7 @@ static OSStatus outputCallback(void *udata, AudioUnitRenderActionFlags *flags, c
     
     AURenderCallbackStruct cb;
     cb.inputProc = inputCallback;
-    cb.inputProcRefCon = self;
+    cb.inputProcRefCon = (__bridge void * _Nullable)(self);
     len = sizeof(AURenderCallbackStruct);
     err = AudioUnitSetProperty(_audioUnit, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 0, &cb, len);
     if (err != noErr) {
@@ -157,7 +157,7 @@ static OSStatus outputCallback(void *udata, AudioUnitRenderActionFlags *flags, c
     }
     
     cb.inputProc = outputCallback;
-    cb.inputProcRefCon = self;
+    cb.inputProcRefCon = (__bridge void * _Nullable)(self);
     len = sizeof(AURenderCallbackStruct);
     err = AudioUnitSetProperty(_audioUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, 0, &cb, len);
     if (err != noErr) {

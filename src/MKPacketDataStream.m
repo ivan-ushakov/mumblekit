@@ -20,7 +20,7 @@
 - (id) initWithData:(NSData *)ourContainer {
     if ((self = [super init])) {
         immutableData = ourContainer;
-        [immutableData retain];
+        // [immutableData retain];
         data = (unsigned char *)[immutableData bytes];
         offset = 0;
         overshoot = 0;
@@ -42,9 +42,9 @@
 }
 
 - (void) dealloc {
-    [mutableData release];
-    [immutableData release];
-    [super dealloc];
+    // [mutableData release];
+    // [immutableData release];
+    // [super dealloc];
 }
 
 - (NSUInteger) size {

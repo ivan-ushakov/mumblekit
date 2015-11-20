@@ -66,10 +66,10 @@
 }
 
 - (void) dealloc {
-    [_pingers release];
-    [_randvalues release];
+    // [_pingers release];
+    // [_randvalues release];
     [self teardownPingerState];
-    [super dealloc];
+    // [super dealloc];
 }
 
 - (void) setupPingerState {
@@ -138,9 +138,9 @@
 }
 
 - (void) teardownPingerState {
-    dispatch_release(_reader4);
-    dispatch_release(_reader6);
-    dispatch_release(_timer);
+    // dispatch_release(_reader4);
+    // dispatch_release(_reader6);
+    // dispatch_release(_timer);
     if (_sock4 > 0)
         close(_sock4);
     if (_sock6 > 0)
@@ -219,14 +219,14 @@
             [addrPingers addObject:pinger];
         }
 
-        [pinger release];
+        // [pinger release];
         if ([_pingers count] == 1)
             [self setupPingerState];
     }
 }
 
 - (void) removePinger:(MKServerPinger *)pinger {
-    [pinger retain];
+    // [pinger retain];
 
     NSData *addr = [pinger address];
     if (addr != nil) {
@@ -280,8 +280,8 @@
 
 - (void) dealloc {
     [[MKServerPingerController sharedController] removePinger:self];
-    [_address release];
-    [super dealloc];
+    // [_address release];
+    // [super dealloc];
 }
 
 - (void) setDelegate:(id<MKServerPingerDelegate>)delegate {

@@ -32,7 +32,7 @@
 @implementation MKDistinguishedNameParser
 
 + (NSDictionary *) parseName:(NSData *)dn {
-    MKDistinguishedNameParser *parser = [[[MKDistinguishedNameParser alloc] initWithName:dn] autorelease];
+    MKDistinguishedNameParser *parser = [[MKDistinguishedNameParser alloc] initWithName:dn];
     [parser parse];
     return [parser dictionaryRepresentation];
 }
@@ -51,9 +51,9 @@
 }
 
 - (void) dealloc {
-    [_pairs release];
-    [_name release];
-    [super dealloc];
+    // [_pairs release];
+    // [_name release];
+    // [super dealloc];
 }
 
 - (void) parse {
@@ -71,7 +71,7 @@
     if (([_pairs count] % 2) != 0) {
         return nil;
     }
-    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithCapacity:[_pairs count]/2] autorelease];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:[_pairs count]/2];
     for (int i = 0; i < [_pairs count]; i += 2) {
         [dict setObject:[_pairs objectAtIndex:i+1] forKey:[_pairs objectAtIndex:i]];
     }
@@ -107,7 +107,7 @@
 
 - (void) scanAttributeName {
     NSCharacterSet *letters = [NSCharacterSet letterCharacterSet];
-    NSMutableString *attrName = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *attrName = [[NSMutableString alloc] init];
     
     // Read at least a single 'letter'.
     unichar c = [self getch];
@@ -164,16 +164,16 @@
     [allAllowedChars formUnionWithCharacterSet:[NSCharacterSet whitespaceCharacterSet]];
     [allAllowedChars formUnionWithCharacterSet:[NSCharacterSet symbolCharacterSet]];
     [allAllowedChars formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
-    [allAllowedChars autorelease];
+    // [allAllowedChars autorelease];
     
     NSMutableCharacterSet *charsOutsideQuotes = [allAllowedChars mutableCopy];
     [charsOutsideQuotes removeCharactersInString:@","];
-    [charsOutsideQuotes autorelease];
+    // [charsOutsideQuotes autorelease];
     
     NSString *doubleQuote = @"\"";
     unichar quoteChar = [doubleQuote characterAtIndex:0];
     
-    NSMutableString *attrValue = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *attrValue = [[NSMutableString alloc] init];
     
     unichar c = [self getch];
     if (c == quoteChar) {
@@ -211,7 +211,7 @@
         [self rejectWithReason:@"expected quoted string to start with `\"'"];
     }
     
-    NSMutableString *quotedString = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *quotedString = [[NSMutableString alloc] init];
     while (1) {
         c = [self getch];
         if (c == quoteChar) {

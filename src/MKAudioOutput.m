@@ -41,7 +41,7 @@
 - (id) initWithDevice:(MKAudioDevice *)device andSettings:(MKAudioSettings *)settings {
     if ((self = [super init])) {
         memcpy(&_settings, settings, sizeof(MKAudioSettings));
-        _device = [device retain];
+        _device = device;
         _sampleSize = 0;
         _frameSize = SAMPLE_RATE / 100;
         _mixerFrequency = 0;
@@ -74,24 +74,24 @@
             return [self mixFrames:frames amount:nsamp];
         }];
         
-        _mixerInfo = [[NSDictionary dictionaryWithObjectsAndKeys:
+        _mixerInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                 [NSDate date], @"last-update",
                 [NSArray array], @"sources",
                 [NSArray array], @"removed",
-            nil] retain];
+            nil];
         _mixerInfoLock = [[NSLock alloc] init];
     }
     return self;
 }
 
 - (void) dealloc {
-    [_mixerInfoLock release];
-    [_mixerInfo release];
+    // [_mixerInfoLock release];
+    // [_mixerInfo release];
     [_device setupOutput:NULL];
-    [_device release];
-    [_outputLock release];
-    [_outputs release];
-    [super dealloc];
+    // [_device release];
+    // [_outputLock release];
+    // [_outputs release];
+    // [super dealloc];
 }
 
 - (NSDictionary *) audioOutputDebugDescription:(id)ou {
@@ -160,9 +160,9 @@
     }
     
     if (_settings.audioMixerDebug) {
-        NSMutableDictionary *mixerInfo = [[[NSMutableDictionary alloc] init] autorelease];
-        NSMutableArray *sources = [[[NSMutableArray alloc] init] autorelease];
-        NSMutableArray *removed = [[[NSMutableArray alloc] init] autorelease];
+        NSMutableDictionary *mixerInfo = [[NSMutableDictionary alloc] init];
+        NSMutableArray *sources = [[NSMutableArray alloc] init];
+        NSMutableArray *removed = [[NSMutableArray alloc] init];
 
         for (id ou in mix) {
             [sources addObject:[self audioOutputDebugDescription:ou]];
@@ -178,8 +178,8 @@
         [mixerInfo setObject:removed forKey:@"removed"];
     
         [_mixerInfoLock lock];
-        [_mixerInfo release];
-        _mixerInfo = [mixerInfo retain];
+        // [_mixerInfo release];
+        _mixerInfo = mixerInfo;
         [_mixerInfoLock unlock];
     }
     
@@ -219,8 +219,8 @@
 
     retVal = [mix count] > 0;
 
-    [mix release];
-    [del release];
+    // [mix release];
+    // [del release];
 
     if(!retVal && _cngEnabled) {
         short *outputBuffer = (short *)frames;
@@ -263,13 +263,13 @@
 
     [_outputLock lock];
     MKAudioOutputSpeech *outputUser = [_outputs objectForKey:[NSNumber numberWithUnsignedInteger:session]];
-    [outputUser retain];
+    // [outputUser retain];
     [_outputLock unlock];
 
     if (outputUser == nil || [outputUser messageType] != msgType) {
         if (outputUser != nil) {
             [self removeBuffer:outputUser];
-            [outputUser release];
+            // [outputUser release];
         }
         outputUser = [[MKAudioOutputSpeech alloc] initWithSession:session sampleRate:_mixerFrequency messageType:msgType];
         [_outputLock lock];
@@ -278,7 +278,7 @@
     }
 
     [outputUser addFrame:data forSequence:seq];
-    [outputUser release];
+    // [outputUser release];
 }
 
 - (NSDictionary *) copyMixerInfo {

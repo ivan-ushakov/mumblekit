@@ -41,9 +41,9 @@
 }
 - (void) dealloc {
     [_channel removeUser:self];
-    [_username release];
+    // [_username release];
 
-    [super dealloc];
+    // [super dealloc];
 }
 
 #pragma mark -
@@ -61,7 +61,7 @@
 }
 
 - (void) setUserName:(NSString *)name {
-    [_username release];
+    // [_username release];
     _username = [name copy];
 }
 
@@ -78,7 +78,7 @@
 }
 
 - (void) setUserHash:(NSString *)hash {
-    [_userHash release];
+    // [_userHash release];
     _userHash = [hash copy];
 }
 
@@ -187,7 +187,7 @@
 }
 
 - (void) setCommentHash:(NSData *)hash {
-    [_commentHash release];
+    // [_commentHash release];
     _commentHash = [hash copy];
 }
 
@@ -196,7 +196,7 @@
 }
 
 - (void) setComment:(NSString *)comment {
-    [_comment release];
+    // [_comment release];
     _comment = [comment copy];
 }
 
@@ -205,7 +205,7 @@
 }
 
 - (void) setTextureHash:(NSData *)hash {
-    [_textureHash release];
+    // [_textureHash release];
     _textureHash = [hash copy];
 }
 
@@ -214,7 +214,7 @@
 }
 
 - (void) setTexture:(NSData *)texture {
-    [_texture release];
+    // [_texture release];
     _texture = [texture copy];
 }
 

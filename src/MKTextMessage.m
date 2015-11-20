@@ -18,7 +18,7 @@
 
 - (id) initWithString:(NSString *)str {
     if ((self = [super init])) {
-        _rawStr = [str retain];
+        _rawStr = str;
         _imagesArray = [[NSMutableArray alloc] init];
         _linksArray = [[NSMutableArray alloc] init];
         NSRange r = [_rawStr rangeOfString:@"<"];
@@ -28,7 +28,7 @@
             NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:[[NSString stringWithFormat:@"<doc>%@</doc>", _rawStr] dataUsingEncoding:NSUTF8StringEncoding]];
             [xmlParser setDelegate:self];
             [xmlParser parse];
-            [xmlParser release];
+            // [xmlParser release];
 
             // Strip extra whitespace
             NSMutableData *filtered = [[NSMutableData alloc] init];
@@ -46,10 +46,10 @@
                 lastc = c;
             }
 
-            [_plainStr release];
+            // [_plainStr release];
             _plainStr = nil;
-            _filteredStr = [[NSString stringWithCharacters:[filtered bytes] length:[filtered length]/2] retain];
-            [filtered release];
+            _filteredStr = [NSString stringWithCharacters:[filtered bytes] length:[filtered length]/2];
+            // [filtered release];
         }
     }
 
@@ -57,23 +57,23 @@
 }
 
 - (void) dealloc {
-    [_rawStr release];
-    [_plainStr release];
-    [_imagesArray release];
-    [_linksArray release];
-    [super dealloc];
+    // [_rawStr release];
+    // [_plainStr release];
+    // [_imagesArray release];
+    // [_linksArray release];
+    // [super dealloc];
 }
 
 + (MKTextMessage *) messageWithString:(NSString *)msg {
-    return [[[MKTextMessage alloc] initWithString:msg] autorelease];
+    return [[MKTextMessage alloc] initWithString:msg];
 }
 
 + (MKTextMessage *) messageWithPlainText:(NSString *)msg {
-    return [[[MKTextMessage alloc] initWithString:msg] autorelease];
+    return [[MKTextMessage alloc] initWithString:msg];
 }
 
 + (MKTextMessage *) messageWithHTML:(NSString *)msg {
-    return [[[MKTextMessage alloc] initWithString:msg] autorelease];
+    return [[MKTextMessage alloc] initWithString:msg];
 }
 
 - (NSString *) plainTextString {
