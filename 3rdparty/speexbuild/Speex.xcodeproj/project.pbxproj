@@ -312,7 +312,7 @@
 		28D1DADF132AEB1400456ED6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0710;
 			};
 			buildConfigurationList = 28D1DAE2132AEB1400456ED6 /* Build configuration list for PBXProject "Speex" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -464,6 +464,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 28190D05150D61EB00E07613 /* Base.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
