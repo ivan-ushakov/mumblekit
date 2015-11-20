@@ -14,6 +14,17 @@ FOUNDATION_EXPORT double MumbleKitVersionNumber;
 //! Project version string for MumbleKit.
 FOUNDATION_EXPORT const unsigned char MumbleKitVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <MumbleKit/PublicHeader.h>
-
-
+#import <MumbleKit/MKAccessControl.h>
+#import <MumbleKit/MKAudio.h>
+#import <MumbleKit/MKCertificate.h>
+#import <MumbleKit/MKChannel.h>
+#import <MumbleKit/MKChannelACL.h>
+#import <MumbleKit/MKChannelGroup.h>
+#import <MumbleKit/MKConnection.h>
+#import <MumbleKit/MKPermission.h>
+#import <MumbleKit/MKServerModel.h>
+#import <MumbleKit/MKServerPinger.h>
+#import <MumbleKit/MKServices.h>
+#import <MumbleKit/MKTextMessage.h>
+#import <MumbleKit/MKUser.h>
+#import <MumbleKit/MKVersion.h>
