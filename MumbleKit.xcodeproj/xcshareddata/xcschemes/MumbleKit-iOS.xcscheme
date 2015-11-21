@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BA17E19A1BFFB93D00E11B40"
-               BuildableName = "MumbleKit-iOS.framework"
+               BuildableName = "MumbleKit.framework"
                BlueprintName = "MumbleKit-iOS"
                ReferencedContainer = "container:MumbleKit.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BA17E19A1BFFB93D00E11B40"
-            BuildableName = "MumbleKit-iOS.framework"
+            BuildableName = "MumbleKit.framework"
             BlueprintName = "MumbleKit-iOS"
             ReferencedContainer = "container:MumbleKit.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BA17E19A1BFFB93D00E11B40"
-            BuildableName = "MumbleKit-iOS.framework"
+            BuildableName = "MumbleKit.framework"
             BlueprintName = "MumbleKit-iOS"
             ReferencedContainer = "container:MumbleKit.xcodeproj">
          </BuildableReference>
