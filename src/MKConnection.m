@@ -927,7 +927,7 @@ out:
         _serverVersion = [[NSString alloc] initWithFormat:@"%i.%i.%i", (version >> 8) & 0xff, (version >> 4) & 0xff, version & 0xff, nil];
     }
     if ([msg hasRelease])
-        _serverRelease = [msg copy];
+        _serverRelease = [[msg releaseString] copy];
     if ([msg hasOs])
         _serverOSName = [[msg os] copy];
     if ([msg hasOsVersion])

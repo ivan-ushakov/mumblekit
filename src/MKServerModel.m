@@ -88,7 +88,7 @@
 
         [_channelMap setObject:_rootChannel forKey:[NSNumber numberWithUnsignedInteger:0]];
 
-        // _connection = [conn retain];
+         _connection = conn;
         [_connection setMessageHandler:self];
         
         // fixme(mkrautz): Refactor this once 1.0's out the door.

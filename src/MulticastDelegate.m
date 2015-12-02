@@ -212,7 +212,7 @@ static void MulticastDelegateListNodeRelease(MulticastDelegateListNode *node)
     MulticastDelegateListNode *node = delegateList;
     while(node != NULL)
     {
-        if([(__bridge id)(foundNode->delegate) respondsToSelector:aSelector])
+        if([(__bridge id)(node->delegate) respondsToSelector:aSelector])
         {
             if(foundNode)
             {
