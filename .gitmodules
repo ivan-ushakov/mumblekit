@@ -9,7 +9,7 @@
 	url = git://github.com/booyah/protobuf-objc.git
 [submodule "3rdparty/openssl"]
 	path = 3rdparty/openssl
-	url = git://github.com/mkrautz/openssl-mirror.git
+	url = git://github.com/openssl/openssl.git
 [submodule "3rdparty/opus"]
 	path = 3rdparty/opus
 	url = git://github.com/xiph/opus.git
