@@ -49,7 +49,6 @@
 		2845A7FA132D9C520034D631 /* MKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 2845A7D7132D9C520034D631 /* MKUtils.h */; settings = {ATTRIBUTES = (); }; };
 		2845A7FC132D9C520034D631 /* MKVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = 2845A7D8132D9C520034D631 /* MKVersion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28492363132ED67E00B4EAAC /* CELT-0.7.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2849235E132ED67E00B4EAAC /* CELT-0.7.0.dylib */; };
-		28492364132ED67E00B4EAAC /* OpenSSL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2849235F132ED67E00B4EAAC /* OpenSSL.dylib */; };
 		28492365132ED67E00B4EAAC /* ProtocolBuffers.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28492360132ED67E00B4EAAC /* ProtocolBuffers.dylib */; };
 		28492366132ED67E00B4EAAC /* Speex.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28492361132ED67E00B4EAAC /* Speex.dylib */; };
 		28492367132ED67E00B4EAAC /* SpeexDSP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28492362132ED67E00B4EAAC /* SpeexDSP.dylib */; };
@@ -76,8 +75,9 @@
 		28CE05CA1687A442006E2739 /* MKVoiceProcessingDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 284C1ABA161CABCC00B87340 /* MKVoiceProcessingDevice.h */; };
 		28CE05CB1687A454006E2739 /* MKVoiceProcessingDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 284C1ABB161CABCC00B87340 /* MKVoiceProcessingDevice.m */; };
 		28F2FAD613E37BA000034BF2 /* MKAudioOutputUserPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F2FAD413E37BA000034BF2 /* MKAudioOutputUserPrivate.h */; };
+		7EAF51D11C38171000C30281 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAF51CF1C38171000C30281 /* libcrypto.a */; };
+		7EAF51D21C38171000C30281 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAF51D01C38171000C30281 /* libssl.a */; };
 		BA17E1AF1BFFB9CE00E11B40 /* libCELT-0.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28492310132ED60700B4EAAC /* libCELT-0.7.0.a */; };
-		BA17E1B01BFFB9CE00E11B40 /* libOpenSSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28492336132ED63800B4EAAC /* libOpenSSL.a */; };
 		BA17E1B11BFFB9CE00E11B40 /* libOpus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 285B426114E6E1200045E282 /* libOpus.a */; };
 		BA17E1B21BFFB9CE00E11B40 /* libProtocolBuffers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2849232A132ED61800B4EAAC /* libProtocolBuffers.a */; };
 		BA17E1B31BFFB9CE00E11B40 /* libSpeex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28492345132ED64D00B4EAAC /* libSpeex.a */; };
@@ -192,20 +192,6 @@
 			remoteGlobalIDString = 2845A6B8132D99600034D631;
 			remoteInfo = "ProtocolBuffers (Mac)";
 		};
-		28492335132ED63800B4EAAC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 28F58C46132AF1070053C348;
-			remoteInfo = "OpenSSL (iOS)";
-		};
-		28492337132ED63800B4EAAC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 28F58C57132AF1170053C348;
-			remoteInfo = "OpenSSL (Mac)";
-		};
 		28492344132ED64D00B4EAAC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2849233C132ED64C00B4EAAC /* Speex.xcodeproj */;
@@ -233,13 +219,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 28877ECF132D975D00793CC5;
 			remoteInfo = "SpeexDSP (Mac)";
-		};
-		28492354132ED66F00B4EAAC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 28F58C56132AF1170053C348;
-			remoteInfo = "OpenSSL (Mac)";
 		};
 		28492356132ED66F00B4EAAC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -296,13 +275,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 280D5F84132AE73C00540C3D;
 			remoteInfo = "CELT-0.7 (iOS)";
-		};
-		BA17E1A71BFFB98400E11B40 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 28F58C45132AF1070053C348;
-			remoteInfo = "OpenSSL (iOS)";
 		};
 		BA17E1A91BFFB98800E11B40 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -395,7 +367,6 @@
 		2845A7D8132D9C520034D631 /* MKVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKVersion.h; path = src/MumbleKit/MKVersion.h; sourceTree = SOURCE_ROOT; };
 		28492307132ED60700B4EAAC /* CELT-0.7.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "CELT-0.7.xcodeproj"; path = "3rdparty/celt-0.7.0-build/CELT-0.7.xcodeproj"; sourceTree = "<group>"; };
 		28492321132ED61800B4EAAC /* ProtocolBuffers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ProtocolBuffers.xcodeproj; path = 3rdparty/protobufbuild/ProtocolBuffers.xcodeproj; sourceTree = "<group>"; };
-		2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenSSL.xcodeproj; path = 3rdparty/opensslbuild/OpenSSL.xcodeproj; sourceTree = "<group>"; };
 		2849233C132ED64C00B4EAAC /* Speex.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Speex.xcodeproj; path = 3rdparty/speexbuild/Speex.xcodeproj; sourceTree = "<group>"; };
 		28492348132ED65700B4EAAC /* SpeexDSP.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SpeexDSP.xcodeproj; path = 3rdparty/speexdspbuild/SpeexDSP.xcodeproj; sourceTree = "<group>"; };
 		2849235E132ED67E00B4EAAC /* CELT-0.7.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = "CELT-0.7.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -424,11 +395,12 @@
 		28CC36F8132ED92500241269 /* Mumble.pb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Mumble.pb.m; path = proto/Mumble.pb.m; sourceTree = SOURCE_ROOT; };
 		28CC36F9132ED92500241269 /* ObjectivecDescriptor.pb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectivecDescriptor.pb.m; path = proto/ObjectivecDescriptor.pb.m; sourceTree = SOURCE_ROOT; };
 		28CC370E132EDC7300241269 /* libCELT-0.7.0.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libCELT-0.7.0.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		28CC370F132EDC7300241269 /* libOpenSSL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libOpenSSL.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28CC3710132EDC7300241269 /* libProtocolBuffers.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libProtocolBuffers.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28CC3711132EDC7300241269 /* libSpeex.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSpeex.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28CC3712132EDC7300241269 /* libSpeexDSP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSpeexDSP.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28F2FAD413E37BA000034BF2 /* MKAudioOutputUserPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKAudioOutputUserPrivate.h; path = src/MKAudioOutputUserPrivate.h; sourceTree = SOURCE_ROOT; };
+		7EAF51CF1C38171000C30281 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = 3rdparty/openssl/lib/libcrypto.a; sourceTree = "<group>"; };
+		7EAF51D01C38171000C30281 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = 3rdparty/openssl/lib/libssl.a; sourceTree = "<group>"; };
 		BA17E19B1BFFB93D00E11B40 /* MumbleKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MumbleKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA17E1F51BFFBE1C00E11B40 /* MumbleKit-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MumbleKit-iOS.plist"; path = "src/MumbleKit-iOS.plist"; sourceTree = SOURCE_ROOT; };
 		BA17E1F71BFFBEB300E11B40 /* MumbleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MumbleKit.h; path = src/MumbleKit.h; sourceTree = SOURCE_ROOT; };
@@ -459,7 +431,6 @@
 				28CC36ED132ED88200241269 /* Foundation.framework in Frameworks */,
 				28CC36EB132ED87100241269 /* Security.framework in Frameworks */,
 				28492363132ED67E00B4EAAC /* CELT-0.7.0.dylib in Frameworks */,
-				28492364132ED67E00B4EAAC /* OpenSSL.dylib in Frameworks */,
 				28492365132ED67E00B4EAAC /* ProtocolBuffers.dylib in Frameworks */,
 				28492366132ED67E00B4EAAC /* Speex.dylib in Frameworks */,
 				28492367132ED67E00B4EAAC /* SpeexDSP.dylib in Frameworks */,
@@ -470,11 +441,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EAF51D11C38171000C30281 /* libcrypto.a in Frameworks */,
+				7EAF51D21C38171000C30281 /* libssl.a in Frameworks */,
 				BA17E2021BFFC7F500E11B40 /* Security.framework in Frameworks */,
 				BA17E2001BFFC18A00E11B40 /* CoreAudio.framework in Frameworks */,
 				BA17E1FC1BFFC13600E11B40 /* AudioToolbox.framework in Frameworks */,
 				BA17E1AF1BFFB9CE00E11B40 /* libCELT-0.7.0.a in Frameworks */,
-				BA17E1B01BFFB9CE00E11B40 /* libOpenSSL.a in Frameworks */,
 				BA17E1B11BFFB9CE00E11B40 /* libOpus.a in Frameworks */,
 				BA17E1B21BFFB9CE00E11B40 /* libProtocolBuffers.a in Frameworks */,
 				BA17E1B31BFFB9CE00E11B40 /* libSpeex.a in Frameworks */,
@@ -500,7 +472,6 @@
 		2835C27E132AE4150095FB41 /* Third Party */ = {
 			isa = PBXGroup;
 			children = (
-				2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */,
 				28492321132ED61800B4EAAC /* ProtocolBuffers.xcodeproj */,
 				28492307132ED60700B4EAAC /* CELT-0.7.xcodeproj */,
 				285B425814E6E1200045E282 /* Opus.xcodeproj */,
@@ -631,15 +602,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2849232E132ED63600B4EAAC /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				28492336132ED63800B4EAAC /* libOpenSSL.a */,
-				28492338132ED63800B4EAAC /* OpenSSL.dylib */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		2849233D132ED64C00B4EAAC /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -714,8 +676,9 @@
 		28CC3718132EDC7900241269 /* iOS Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7EAF51CF1C38171000C30281 /* libcrypto.a */,
+				7EAF51D01C38171000C30281 /* libssl.a */,
 				28CC370E132EDC7300241269 /* libCELT-0.7.0.a */,
-				28CC370F132EDC7300241269 /* libOpenSSL.a */,
 				28CC3710132EDC7300241269 /* libProtocolBuffers.a */,
 				28CC3711132EDC7300241269 /* libSpeex.a */,
 				28CC3712132EDC7300241269 /* libSpeexDSP.a */,
@@ -820,7 +783,6 @@
 			);
 			dependencies = (
 				0245A133154F593C00476144 /* PBXTargetDependency */,
-				28492355132ED66F00B4EAAC /* PBXTargetDependency */,
 				28492357132ED66F00B4EAAC /* PBXTargetDependency */,
 				28492359132ED66F00B4EAAC /* PBXTargetDependency */,
 				2849235B132ED66F00B4EAAC /* PBXTargetDependency */,
@@ -846,7 +808,6 @@
 				BA17E1AE1BFFB99900E11B40 /* PBXTargetDependency */,
 				BA17E1AC1BFFB99400E11B40 /* PBXTargetDependency */,
 				BA17E1AA1BFFB98800E11B40 /* PBXTargetDependency */,
-				BA17E1A81BFFB98400E11B40 /* PBXTargetDependency */,
 				BA17E1A61BFFB97B00E11B40 /* PBXTargetDependency */,
 				BA17E1A41BFFB97600E11B40 /* PBXTargetDependency */,
 			);
@@ -882,10 +843,6 @@
 				{
 					ProductGroup = 28492308132ED60700B4EAAC /* Products */;
 					ProjectRef = 28492307132ED60700B4EAAC /* CELT-0.7.xcodeproj */;
-				},
-				{
-					ProductGroup = 2849232E132ED63600B4EAAC /* Products */;
-					ProjectRef = 2849232D132ED63600B4EAAC /* OpenSSL.xcodeproj */;
 				},
 				{
 					ProductGroup = 285B425914E6E1200045E282 /* Products */;
@@ -939,20 +896,6 @@
 			fileType = "compiled.mach-o.dylib";
 			path = ProtocolBuffers.dylib;
 			remoteRef = 2849232B132ED61800B4EAAC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		28492336132ED63800B4EAAC /* libOpenSSL.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libOpenSSL.a;
-			remoteRef = 28492335132ED63800B4EAAC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		28492338132ED63800B4EAAC /* OpenSSL.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = OpenSSL.dylib;
-			remoteRef = 28492337132ED63800B4EAAC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		28492345132ED64D00B4EAAC /* libSpeex.a */ = {
@@ -1096,11 +1039,6 @@
 			name = "Opus (Mac)";
 			targetProxy = 0245A132154F593C00476144 /* PBXContainerItemProxy */;
 		};
-		28492355132ED66F00B4EAAC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "OpenSSL (Mac)";
-			targetProxy = 28492354132ED66F00B4EAAC /* PBXContainerItemProxy */;
-		};
 		28492357132ED66F00B4EAAC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "ProtocolBuffers (Mac)";
@@ -1130,11 +1068,6 @@
 			isa = PBXTargetDependency;
 			name = "CELT-0.7 (iOS)";
 			targetProxy = BA17E1A51BFFB97B00E11B40 /* PBXContainerItemProxy */;
-		};
-		BA17E1A81BFFB98400E11B40 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "OpenSSL (iOS)";
-			targetProxy = BA17E1A71BFFB98400E11B40 /* PBXContainerItemProxy */;
 		};
 		BA17E1AA1BFFB98800E11B40 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1249,6 +1182,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdparty/openssl/lib",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = info.mumble.MumbleKit;
 				PRODUCT_NAME = MumbleKit;
@@ -1300,6 +1237,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdparty/openssl/lib",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = info.mumble.MumbleKit;
 				PRODUCT_NAME = MumbleKit;

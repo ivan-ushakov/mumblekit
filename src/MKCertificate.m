@@ -5,6 +5,8 @@
 #import <MumbleKit/MKCertificate.h>
 #import "MKDistinguishedNameParser.h"
 
+#define OPENSSL_USE_DEPRECATED
+
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <openssl/bio.h>

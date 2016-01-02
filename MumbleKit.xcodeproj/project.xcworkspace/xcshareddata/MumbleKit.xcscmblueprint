@@ -1,0 +1,51 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "7F4FF6C5F6F5A0EA206DC318D6A95CC361CC7EEE",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "60C590E0A1E3A270911208E27AD0681DC1AAA138" : 0,
+    "FEE1C572E49EA55C05E04A41217533B1E41F83F3" : 0,
+    "0188F2A2CDE1E23FB54BA7DEC720DB0076A94A2D" : 0,
+    "7F4FF6C5F6F5A0EA206DC318D6A95CC361CC7EEE" : 0,
+    "37627A916738CB9184999F34BEDC8F4742020B72" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "DDC0BE4F-190F-4ED5-B874-A26AAC57F2E7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "60C590E0A1E3A270911208E27AD0681DC1AAA138" : "mumblekit\/3rdparty\/opus\/",
+    "FEE1C572E49EA55C05E04A41217533B1E41F83F3" : "mumblekit\/3rdparty\/speex\/",
+    "0188F2A2CDE1E23FB54BA7DEC720DB0076A94A2D" : "mumblekit\/3rdparty\/protobuf\/",
+    "7F4FF6C5F6F5A0EA206DC318D6A95CC361CC7EEE" : "mumblekit\/",
+    "37627A916738CB9184999F34BEDC8F4742020B72" : "mumblekit\/3rdparty\/celt-0.7.0\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MumbleKit",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MumbleKit.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/booyah\/protobuf-objc.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0188F2A2CDE1E23FB54BA7DEC720DB0076A94A2D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/mumble-voip\/celt-0.7.0.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "37627A916738CB9184999F34BEDC8F4742020B72"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/xiph\/opus.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "60C590E0A1E3A270911208E27AD0681DC1AAA138"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ivan-ushakov\/mumblekit",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7F4FF6C5F6F5A0EA206DC318D6A95CC361CC7EEE"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/xiph\/speex.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FEE1C572E49EA55C05E04A41217533B1E41F83F3"
+    }
+  ]
+}
